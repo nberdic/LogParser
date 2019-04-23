@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder
         public List<LogModel> Parse(string[] lines)
         {
             List<LogModel> tempList = new List<LogModel>();
-
+            
             for (int x = 0; x < lines.Length; x++)
             {
                 string[] arrayOfParts = lines[x].Split('|');

@@ -9,6 +9,6 @@ namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder
 {
     public interface IParsingFactory
     {
-        IParsingStrategy Create(string line);
+        IParsingStrategy Create(string[] lines);
     }
 }

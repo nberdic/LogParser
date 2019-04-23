@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +21,15 @@ namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder
                 if ((lines[x] != "") && (arrayOfParts.Count() == 5))
                 {
                     int id = x + 1;
+                    int eventId;
                     DateTime dateTime = DateTime.Parse(arrayOfParts[0] + " " + arrayOfParts[1]);
+
                     string threadId = "";
                     string logLevel = arrayOfParts[2];
-                    int eventId = int.Parse(arrayOfParts[3]);
+                    if (!int.TryParse(arrayOfParts[3], out eventId))
+                    {
+                        eventId = -1;
+                    }
                     string text = arrayOfParts[4].Trim();
 
                     tempList.Add(new LogModel(id, dateTime, threadId, logLevel, eventId, text));

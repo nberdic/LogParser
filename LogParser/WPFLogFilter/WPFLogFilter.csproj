@@ -73,10 +73,10 @@
     </ApplicationDefinition>
     <Compile Include="DialgWrapper\IDialogWrapper.cs" />
     <Compile Include="DialgWrapper\DialogWrapper.cs" />
+    <Compile Include="Enums\LogLevelEnumcs.cs" />
     <Compile Include="Filter\DateTimeFilter.cs" />
     <Compile Include="Filter\EventIdFilter.cs" />
     <Compile Include="Filter\FilterFactory.cs" />
-    <Compile Include="Filter\IdFilter.cs" />
     <Compile Include="Filter\IFilter.cs" />
     <Compile Include="Filter\IFilterFactory.cs" />
     <Compile Include="Filter\LogLevelFilter.cs" />
@@ -90,6 +90,7 @@
     <Compile Include="Parsing\ParseStrategy\NoEventIdParsingStrategy.cs" />
     <Compile Include="Parsing\ParseStrategy\NoThreadIdParsingStrategy.cs" />
     <Compile Include="Parsing\ParseStrategy\StringOnlyParsingStrategy.cs" />
+    <Compile Include="ViewModel\BindingProxy.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

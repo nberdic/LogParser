@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WPFLogFilter.DialogWrapperFolder;
+using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
 using WPFLogFilter.Parsing.ParseStrategy;
@@ -21,45 +23,40 @@ namespace WPFLogFilter.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<LogModel> _listLoadLine;
+        private ObservableCollection<ObservableCollection<LogModel>> _listFilters;
+        private ObservableCollection<LogModel> _backupList;
+        private ObservableCollection<LogModel> _idList;
+        private ObservableCollection<LogModel> _dateTimeList;
+        private ObservableCollection<LogModel> _threadIdList;
+        private ObservableCollection<LogModel> _logLevelList;
+        private ObservableCollection<LogModel> _eventIdList;
+        private ObservableCollection<LogModel> _regexList;
+
         private IDialogWrapper _dialogWrapper;
         private IParsingFactory _parsingFactory;
         private IFilterFactory _filterfactory;
-        private ObservableCollection<ObservableCollection<LogModel>> listFilters;
-        private string fileName;
-        private string nameAndVersion;
+        private IParsingStrategy _parsingStrategy;
+        private IList<LogLevelEnum> _logLvlComboEnumList;
+        private LogLevelEnum _logLevelValues;
 
-        private string stopWatch = "";
+        private bool _idIsValid = false;
+        private bool _dateTimeIsValid = false;
+        private bool _threadIdIsValid = false;
+        private bool _logLevelIsValid = false;
+        private bool _eventIdIsValid = false;
+        private bool _textIsValid = false;
+        private bool _caseSensitiveCheckBox = true;
+        private bool _openFileIsValid = false;
 
-        IParsingStrategy parsingStrategy;
-
-        private LogLevelEnum logLevelValues;
-
-        private bool idTrigger = false;
-        private bool dateTimeTrigger = false;
-        private bool threadIdTrigger = false;
-        private bool logLevelTrigger = false;
-        private bool eventIdTrigger = false;
-        private bool textTrigger = false;
-        private bool caseSensitiveCheckBox = true;
-        private bool openFileTrigger = false;
-
-        private ObservableCollection<LogModel> idList;
-        private ObservableCollection<LogModel> dateTimeList;
-        private ObservableCollection<LogModel> threadIdList;
-        private ObservableCollection<LogModel> logLevelList;
-        private ObservableCollection<LogModel> eventIdList;
-        private ObservableCollection<LogModel> regexList;
-
-        private string logTextSearch = "";
-        private string idNumberSearch = "";
-        private string dateTimeSearch1 = "";
-        private string dateTimeSearch2 = "";
-
-        private string threadIdSearch = "";
-        private string logLevelSearch = "";
-        private string eventIdSearch = "";
-
-        private ObservableCollection<LogModel> backup;
+        private string _titleNameAndVersion;
+        private string _titleFileName = "";
+        
+        private string _logTextSearch = "";
+        private string _dateTimeSearch1 = "";
+        private string _dateTimeSearch2 = "";
+        private string _threadIdSearch = "";
+        private string _logLevelSearch = "";
+        private string _eventIdSearch = "";
 
         public MainViewModel(IDialogWrapper dialogWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory)
         {
@@ -70,15 +67,19 @@ namespace WPFLogFilter.ViewModel
             ListLoadLine = new ObservableCollection<LogModel>();
             ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
 
-            idList = new ObservableCollection<LogModel>();
-            eventIdList = new ObservableCollection<LogModel>();
-            dateTimeList = new ObservableCollection<LogModel>();
-            threadIdList = new ObservableCollection<LogModel>();
-            logLevelList = new ObservableCollection<LogModel>();
-            eventIdList = new ObservableCollection<LogModel>();
-            regexList = new ObservableCollection<LogModel>();
+            _idList = new ObservableCollection<LogModel>();
+            _eventIdList = new ObservableCollection<LogModel>();
+            _dateTimeList = new ObservableCollection<LogModel>();
+            _threadIdList = new ObservableCollection<LogModel>();
+            _logLevelList = new ObservableCollection<LogModel>();
+            _eventIdList = new ObservableCollection<LogModel>();
+            _regexList = new ObservableCollection<LogModel>();
+            _backupList = new ObservableCollection<LogModel>();
+            _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
-            ClickMenuCommand = new RelayCommand(MenuItem);
+            GetFileNameAndVersion();
+
+            ClickMenuCommand = new RelayCommand(SelectLogFile);
             OpenNotepadCommand = new RelayCommand(OpenNotepad);
         }
 
@@ -87,307 +88,286 @@ namespace WPFLogFilter.ViewModel
 
         public ObservableCollection<LogModel> ListLoadLine
         {
-            get { return _listLoadLine; }
+            get =>_listLoadLine;
             set
             {
                 Set(ref _listLoadLine, value);
-
-                if (ListLoadLine.Count != 0)
+                if (ListLoadLine != null)
                 {
-                    TriggerType();
-                }
-            }
-        }
-
-        public enum LogLevelEnum
-        {
-            ALL,
-            DEBUG,
-            TRACE,
-            INFO,
-            WARN,
-            ERROR,
-            FATAL,
-            ALERT
-        }
-
-        public IList<LogLevelEnum> LogLevelEnumList
-        {
-            get
-            {
-                return Enum.GetValues(typeof(LogLevelEnum)).Cast<LogLevelEnum>().ToList();
-            }
-        }
-
-        public bool CaseSensitiveCheckBox
-        {
-            get => caseSensitiveCheckBox; set
-            {
-                Set(ref caseSensitiveCheckBox, value);
-                IFilter filterFactory = _filterfactory.Create(6);
-                if (caseSensitiveCheckBox == false)
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogTextSearch + "¢"), 6);
-
-                    // ListLoadLine = filterFactory.Filter(backup, LogTextSearch + "¢");
-                }
-                else
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogTextSearch), 6);
-                    // ListLoadLine = filterFactory.Filter(backup, LogTextSearch);
-                }
-            }
-        }
-
-        public bool IdTrigger
-        {
-            get => idTrigger; set
-            {
-                Set(ref idTrigger, value);
-            }
-        }
-        public bool DateTimeTrigger
-        {
-            get => dateTimeTrigger; set
-            {
-                Set(ref dateTimeTrigger, value);
-            }
-        }
-        public bool ThreadIdTrigger
-        {
-            get => threadIdTrigger; set
-            {
-                Set(ref threadIdTrigger, value);
-            }
-        }
-        public bool LogLevelTrigger
-        {
-            get => logLevelTrigger; set
-            {
-                Set(ref logLevelTrigger, value);
-            }
-        }
-        public bool EventIdTrigger
-        {
-            get => eventIdTrigger; set
-            {
-                Set(ref eventIdTrigger, value);
-            }
-        }
-
-        public bool TextTrigger
-        {
-            get => textTrigger; set
-            {
-                Set(ref textTrigger, value);
-            }
-        }
-
-        public string LogTextSearch
-        {
-            get => logTextSearch;
-            set
-            {
-                Set(ref logTextSearch, value);
-                IFilter filterFactory = _filterfactory.Create(6);
-                if (caseSensitiveCheckBox == false)
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogTextSearch + "¢"), 6);
-
-                    // ListLoadLine = filterFactory.Filter(backup, LogTextSearch + "¢");
-                }
-                else
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogTextSearch), 6);
-                    // ListLoadLine = filterFactory.Filter(backup, LogTextSearch);
-                }
-
-            }
-        }
-        public string IdNumberSearch
-        {
-            get => idNumberSearch; set
-            {
-                Set(ref idNumberSearch, value);
-                IFilter filterFactory = _filterfactory.Create(1);
-                //   ListLoadLine = filterFactory.Filter(backup, idNumberSearch);
-
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, idNumberSearch), 1);
-                // ListFilters.Add(filterFactory.Filter(backup, idNumberSearch));
-            }
-        }
-        public string DateTimeSearch1
-        {
-            get => dateTimeSearch1; set
-            {
-                Set(ref dateTimeSearch1, value);
-                IFilter filterFactory = _filterfactory.Create(2);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
-                //ListLoadLine = filterFactory.Filter(backup, dateTimeSearch1 + "+" + dateTimeSearch2);
-            }
-        }
-
-        public string DateTimeSearch2
-        {
-            get => dateTimeSearch2; set
-            {
-                Set(ref dateTimeSearch2, value);
-                IFilter filterFactory = _filterfactory.Create(2);
-
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
-                //  ListLoadLine = filterFactory.Filter(backup, dateTimeSearch1 + "+" + dateTimeSearch2);
-            }
-        }
-
-        public string ThreadIdSearch
-        {
-            get => threadIdSearch; set
-            {
-                Set(ref threadIdSearch, value);
-                IFilter filterFactory = _filterfactory.Create(3);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, ThreadIdSearch), 3);
-                //   ListLoadLine = filterFactory.Filter(backup, threadIdSearch);
-            }
-        }
-        public string LogLevelSearch
-        {
-            get => logLevelSearch; set
-            {
-                Set(ref logLevelSearch, value);
-                IFilter filterFactory = _filterfactory.Create(4);
-
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogLevelSearch), 4);
-
-                //    ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, logLevelSearch), 4);
-
-                //   ListLoadLine = filterFactory.Filter(backup, logLevelSearch);
-            }
-        }
-        public string EventIdSearch
-        {
-            get => eventIdSearch; set
-            {
-                Set(ref eventIdSearch, value);
-                IFilter filterFactory = _filterfactory.Create(5);
-
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, EventIdSearch), 5);
-
-                //  ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, eventIdSearch), 5);
-                //  ListLoadLine = filterFactory.Filter(backup, eventIdSearch);
-            }
-        }
-
-        public LogLevelEnum LogLevelValues
-        {
-            get => logLevelValues; set
-            {
-                Set(ref logLevelValues, value);
-                IFilter filterFactory = _filterfactory.Create(4);
-
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(backup, LogLevelValues.ToString()), 5);
-
-                //  ListLoadLine = filterFactory.Filter(backup, logLevelValues.ToString());
-            }
-        }
-
-        public ObservableCollection<ObservableCollection<LogModel>> ListFilters
-        {
-            get => listFilters; set
-            {
-                Set(ref listFilters, value);
-            }
-        }
-
-        public string StopWatch { get => stopWatch; set
-            {
-                Set(ref stopWatch, value);
-            }
-        }
-
-        public bool OpenFileTrigger { get => openFileTrigger; set
-            {
-                Set(ref openFileTrigger, value);
-            }
-        }
-
-        public string NameAndVersion { get => nameAndVersion; set
-            {
-                Set(ref nameAndVersion, value);
-            }
-        }
-
-        public void MenuItem()
-        {
-            PopulateList(_dialogWrapper.GetLines(ref fileName));
-        }
-
-        public void OpenNotepad()
-        {
-            Process.Start("notepad.exe", fileName);
-        }
-
-        public void PopulateList(string[] lines)
-        {
-            if (lines != null)
-            {
-                for (int x = 0; x < lines.Length; x++)
-                {
-                    if (!string.IsNullOrEmpty(lines[x]))
+                    if (ListLoadLine.Count != 0)
                     {
-                        var stopWatch = System.Diagnostics.Stopwatch.StartNew();
-
-                        parsingStrategy = _parsingFactory.Create(lines[x]);
-                        FileNameAndVersion();
-                        //stopWatch.Stop();
-
-                        //var timePassed1 = stopWatch.ElapsedMilliseconds;
-
-                        //stopWatch.Start();
-                        //  await Task.Run(() => ListLoadLine = new ObservableCollection<LogModel>(parsingStrategy.Parse(lines)));
-                        ListLoadLine = new ObservableCollection<LogModel>(parsingStrategy.Parse(lines));
-
-                        stopWatch.Stop();
-                        var timePassed = stopWatch.ElapsedMilliseconds;
-                        StopWatch += $"F: {timePassed} ";
-                        backup = ListLoadLine;
-                        break;
+                        ToggleColumnVisibility();
                     }
                 }
             }
         }
 
-        public void FileNameAndVersion()
+        public bool CaseSensitiveCheckBox
         {
-            string version= System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
-            string[] results = fileName.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            NameAndVersion = "v" + version + " File name: "+results[results.Length-1] ;
+            get => _caseSensitiveCheckBox;
+            set
+            {
+                Set(ref _caseSensitiveCheckBox, value);
+                IFilter filterFactory = _filterfactory.Create(6);
+                if (!_caseSensitiveCheckBox)
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
+                }
+                else
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
+                }
+            }
         }
 
-        public void TriggerType()
+        public bool IdIsValid
         {
-            IdTrigger = true;
-            LogLevelTrigger = true;
-            TextTrigger = true;
-            ThreadIdTrigger = true;
-            EventIdTrigger = true;
-            DateTimeTrigger = true;
-            OpenFileTrigger = true;
-            if (parsingStrategy is NoThreadIdParsingStrategy)
+            get => _idIsValid;
+            set
             {
-                ThreadIdTrigger = false;
+                Set(ref _idIsValid, value);
+            }
+        }
+        public bool DateTimeIsValid
+        {
+            get => _dateTimeIsValid;
+            set
+            {
+                Set(ref _dateTimeIsValid, value);
+            }
+        }
+        public bool ThreadIdIsValid
+        {
+            get => _threadIdIsValid;
+            set
+            {
+                Set(ref _threadIdIsValid, value);
+            }
+        }
+        public bool LogLevelIsValid
+        {
+            get => _logLevelIsValid;
+            set
+            {
+                Set(ref _logLevelIsValid, value);
+            }
+        }
+        public bool EventIdIsValid
+        {
+            get => _eventIdIsValid;
+            set
+            {
+                Set(ref _eventIdIsValid, value);
+            }
+        }
+
+        public bool TextIsValid
+        {
+            get => _textIsValid;
+            set
+            {
+                Set(ref _textIsValid, value);
+            }
+        }
+
+        public string LogTextSearch
+        {
+            get => _logTextSearch;
+            set
+            {
+                Set(ref _logTextSearch, value);
+                IFilter filterFactory = _filterfactory.Create(6);
+                if (!_caseSensitiveCheckBox)
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
+                }
+                else
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
+                }
+            }
+        }
+
+        public string DateTimeSearch1
+        {
+            get => _dateTimeSearch1;
+            set
+            {
+                Set(ref _dateTimeSearch1, value);
+                IFilter filterFactory = _filterfactory.Create(2);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+            }
+        }
+
+        public string DateTimeSearch2
+        {
+            get => _dateTimeSearch2;
+            set
+            {
+                Set(ref _dateTimeSearch2, value);
+                IFilter filterFactory = _filterfactory.Create(2);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+            }
+        }
+
+        public string ThreadIdSearch
+        {
+            get => _threadIdSearch;
+            set
+            {
+                Set(ref _threadIdSearch, value);
+                IFilter filterFactory = _filterfactory.Create(3);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch), 3);
+            }
+        }
+        public string LogLevelSearch
+        {
+            get => _logLevelSearch;
+            set
+            {
+                Set(ref _logLevelSearch, value);
+                IFilter filterFactory = _filterfactory.Create(4);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelSearch), 4);
+
+            }
+        }
+        public string EventIdSearch
+        {
+            get => _eventIdSearch;
+            set
+            {
+                Set(ref _eventIdSearch, value);
+                IFilter filterFactory = _filterfactory.Create(5);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch), 5);
+            }
+        }
+
+        public LogLevelEnum LogLevelValues
+        {
+            get => _logLevelValues;
+            set
+            {
+                Set(ref _logLevelValues, value);
+                IFilter filterFactory = _filterfactory.Create(4);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()), 5);
+            }
+        }
+
+        public ObservableCollection<ObservableCollection<LogModel>> ListFilters
+        {
+            get => _listFilters;
+            set
+            {
+                Set(ref _listFilters, value);
+            }
+        }
+
+        public bool OpenFileIsValid
+        {
+            get => _openFileIsValid;
+            set
+            {
+                Set(ref _openFileIsValid, value);
+            }
+        }
+
+        public string TitleNameAndVersion
+        {
+            get => _titleNameAndVersion;
+            set
+            {
+                Set(ref _titleNameAndVersion, value);
+            }
+        }
+
+        public IList<LogLevelEnum> LogLvlComboEnumList
+        {
+            get => _logLvlComboEnumList;
+            set
+            {
+                Set(ref _logLvlComboEnumList, value);
+            }
+        }
+
+        public void OpenNotepad()
+        {
+            Process.Start("notepad.exe", _titleFileName);
+        }
+
+        public void SelectLogFile()
+        {
+            PopulateList(_dialogWrapper.GetLines(ref _titleFileName));
+        }
+       
+        public void PopulateList(string[] lines)
+        {
+            if (lines != null)
+            {
+                _parsingStrategy = _parsingFactory.Create(lines);
+                ClearAllFilters();
+                ListLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(lines));
+                GetFileNameAndVersion();
+                _backupList = ListLoadLine;
+            }
+        }
+
+        public void ClearAllFilters()
+        {
+            _logLevelValues = LogLevelEnum.ALL;
+
+            _logTextSearch = "";
+            _dateTimeSearch1 = "";
+            _dateTimeSearch2 = "";
+            _threadIdSearch = "";
+            _logLevelSearch = "";
+            _eventIdSearch = "";
+            ListFilters.Clear();
+            _idList.Clear();
+            _eventIdList.Clear();
+            _dateTimeList.Clear();
+            _threadIdList.Clear();
+            _logLevelList.Clear();
+            _eventIdList.Clear();
+            _regexList.Clear();
+        }
+
+        public void GetFileNameAndVersion()
+        {
+            string version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+
+            TitleNameAndVersion = "LogParser v" + version;
+            if (!string.IsNullOrEmpty(_titleFileName))
+            {
+                string[] results = _titleFileName.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                TitleNameAndVersion += " - " + results[results.Length - 1];
+            }
+        }
+
+        public void ToggleColumnVisibility()
+        {
+            IdIsValid = true;
+            LogLevelIsValid = true;
+            TextIsValid = true;
+            ThreadIdIsValid = true;
+            EventIdIsValid = true;
+            DateTimeIsValid = true;
+            OpenFileIsValid = true;
+            if (_parsingStrategy is NoThreadIdParsingStrategy)
+            {
+                ThreadIdIsValid = false;
             }
 
-            if (parsingStrategy is NoEventIdParsingStrategy)
+            if (_parsingStrategy is NoEventIdParsingStrategy)
             {
-                EventIdTrigger = false;
+                EventIdIsValid = false;
             }
 
-            if (parsingStrategy is StringOnlyParsingStrategy)
+            if (_parsingStrategy is StringOnlyParsingStrategy)
             {
-                LogLevelTrigger = false;
-                ThreadIdTrigger = false;
-                EventIdTrigger = false;
-                DateTimeTrigger = false;
+                LogLevelIsValid = false;
+                ThreadIdIsValid = false;
+                EventIdIsValid = false;
+                DateTimeIsValid = false;
             }
         }
 
@@ -395,74 +375,70 @@ namespace WPFLogFilter.ViewModel
         {
             switch (caseNo)
             {
-                case 1:
-                    if (idList.Count != 0)
-                    {
-                        ListFilters.Remove(idList);
-                    }
-                    idList = list;
-                    break;
                 case 2:
-                    if (dateTimeList.Count != 0)
+                    if (_dateTimeList.Count != 0)
                     {
-                        ListFilters.Remove(dateTimeList);
+                        ListFilters.Remove(_dateTimeList);
                     }
-                    dateTimeList = list;
+                    _dateTimeList = list;
                     break;
                 case 3:
-                    if (threadIdList.Count != 0)
+                    if (_threadIdList.Count != 0)
                     {
-                        ListFilters.Remove(threadIdList);
+                        ListFilters.Remove(_threadIdList);
                     }
-                    threadIdList = list;
+                    _threadIdList = list;
                     break;
                 case 4:
-                    if (logLevelList.Count != 0)
+                    if (_logLevelList.Count != 0)
                     {
-                        ListFilters.Remove(logLevelList);
+                        ListFilters.Remove(_logLevelList);
                     }
-                    logLevelList = list;
+                    _logLevelList = list;
                     break;
                 case 5:
-                    if (eventIdList.Count != 0)
+                    if (_eventIdList.Count != 0)
                     {
-                        ListFilters.Remove(eventIdList);
+                        ListFilters.Remove(_eventIdList);
                     }
-                    eventIdList = list;
+                    _eventIdList = list;
                     break;
                 case 6:
-                    if (regexList.Count != 0)
+                    if (_regexList.Count != 0)
                     {
-                        ListFilters.Remove(regexList);
+                        ListFilters.Remove(_regexList);
                     }
-                    regexList = list;
+                    _regexList = list;
                     break;
                 default:
                     break;
             }
 
-            if (list.Count != 0)
+            if (list != null)
             {
-                ListFilters.Add(list);
-            }
-
-            IEnumerable<LogModel> filterResult = list;
-
-            if (ListFilters.Count() > 1)
-            {
-                for (int x = 0; x < ListFilters.Count - 1; x++)
+                if (list.Count != 0)
                 {
-                    if (x == 0)
-                    {
-                        filterResult = ListFilters[x].Intersect(ListFilters[x + 1]).ToList();
-                        continue;
-                    }
-                    filterResult = filterResult.Intersect(ListFilters[x + 1]).ToList();
+                    ListFilters.Add(list);
                 }
+                IEnumerable<LogModel> filterResult = list;
+                if (ListFilters.Count() > 1)
+                {
+                    for (int x = 0; x < ListFilters.Count - 1; x++)
+                    {
+                        if (x == 0)
+                        {
+                            filterResult = ListFilters[x].Intersect(ListFilters[x + 1]).ToList();
+                            continue;
+                        }
+                        filterResult = filterResult.Intersect(ListFilters[x + 1]).ToList();
+                    }
+                }
+                return new ObservableCollection<LogModel>(filterResult);
             }
-
-            return new ObservableCollection<LogModel>(filterResult);
+            else
+            {
+                return null;
+            }
         }
-
     }
 }

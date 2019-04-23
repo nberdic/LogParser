@@ -12,8 +12,6 @@ namespace WPFLogFilter.Filter
         {
             switch (choice)
             {
-                case 1:
-                    return new IdFilter();
                 case 2:
                     return new DateTimeFilter();
                 case 3:
