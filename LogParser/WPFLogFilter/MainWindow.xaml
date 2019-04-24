@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFLogFilter"
         xmlns:local1="clr-namespace:WPFLogFilter.ViewModel"
-        mc:Ignorable="d" SizeToContent="Width" Height="Auto" Width="Auto" MinHeight="500" MinWidth="500"
-        DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="Manual"
+        mc:Ignorable="d" SizeToContent="Width" Height="Auto" Width="Auto" MinHeight="500" MinWidth="1000"
+        DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleNameAndVersion}">
 
     <Window.Resources>
@@ -22,14 +22,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition MinWidth="1000" Width="*"/>
+              <!--DataGrid-->
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
@@ -103,6 +97,8 @@
 
         </Grid>
 
+        <!--Level3-->
+
         <ScrollViewer Grid.Row="3" Grid.Column="1" VerticalScrollBarVisibility="Disabled" >
             <Grid MaxHeight="1000">
 
@@ -133,7 +129,7 @@
 
                     <DataGrid.Columns >
 
-                        <!--Level3-->
+                     
 
                         <DataGridTextColumn Header="Line No." HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0}.}" MinWidth="50" Width="auto">
 
@@ -168,7 +164,7 @@
                         </DataGridTextColumn>
 
 
-                        <DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="auto" MinWidth="150">
+                        <DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="300" MaxWidth="500">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
