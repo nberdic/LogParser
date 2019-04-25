@@ -37,19 +37,11 @@ namespace WPFLogFilter.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            //if (ViewModelBase.IsInDesignModeStatic)
-            //{
-            //    // Create design time view services and models
-            //    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            //}
-            //else
-            //{
-            //    // Create run time view services and models
-            //    SimpleIoc.Default.Register<IDataService, DataService>();
-            //}
             SimpleIoc.Default.Register<IDialogWrapper, DialogWrapper>();
             SimpleIoc.Default.Register<IParsingFactory, ParsingFactory>();
             SimpleIoc.Default.Register<IFilterFactory, FilterFactory>();
+
+            SimpleIoc.Default.Register<TabViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
         }
 

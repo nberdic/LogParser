@@ -53,6 +53,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\TabUserControl.xaml.cs">
+      <DependentUpon>TabUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DialgWrapper\IDialogWrapper.cs" />
     <Compile Include="DialgWrapper\DialogWrapper.cs" />
     <Compile Include="Enums\LogLevelEnumcs.cs" />
@@ -90,9 +95,15 @@
     <Compile Include="Parsing\ParseStrategy\NoEventIdParsingStrategy.cs" />
     <Compile Include="Parsing\ParseStrategy\NoThreadIdParsingStrategy.cs" />
     <Compile Include="Parsing\ParseStrategy\StringOnlyParsingStrategy.cs" />
+    <Compile Include="Tabs\ITab.cs" />
     <Compile Include="ViewModel\BindingProxy.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\TabViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="Controls\TabUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -140,7 +151,9 @@
     <Resource Include="Double-J-Design-Ravenna-3d-Filter-List.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\warning.png" />
+    <Resource Include="Resources\warning.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
