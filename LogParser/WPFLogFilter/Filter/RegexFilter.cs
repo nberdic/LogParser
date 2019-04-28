@@ -11,39 +11,39 @@ namespace WPFLogFilter.Filter
 {
     public class RegexFilter : IFilter
     {
-        public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list,string searchText)
+        public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string searchText)
         {
-            int notCaseSensitive=0;
+            int notCaseSensitive = 0;
 
-            if (searchText.Equals(String.Empty))
+            if (searchText.Equals(string.Empty))
             {
                 return list;
             }
 
-            if (searchText[searchText.Length-1].Equals('¢'))
+            if (searchText[searchText.Length - 1].Equals('¢'))
             {
                 searchText = searchText.Remove(searchText.Length - 1);
                 notCaseSensitive = 1;
             }
-            
-                if (IsRegexValid(searchText))
+
+            if (IsRegexValid(searchText))
+            {
+                list = new ObservableCollection<LogModel>(list.Where(x => Regex.Match(x.Text, searchText).Success));
+            }
+            else
+            {
+                if (notCaseSensitive == 0)
                 {
-                    list = new ObservableCollection<LogModel>(list.Where(x => Regex.Match(x.Text, searchText).Success));
+                    list = new ObservableCollection<LogModel>(list.Where(x => x.Text.Contains(searchText)));
                 }
                 else
                 {
-                    if (notCaseSensitive==0)
-                    {
-                        list = new ObservableCollection<LogModel>(list.Where(x => x.Text.Contains(searchText)));
-                    }
-                    else
-                    {
-                        list = new ObservableCollection<LogModel>(list.Where(x => x.Text.ToLower().Contains(searchText.ToLower())));
-                    }
-
+                    list = new ObservableCollection<LogModel>(list.Where(x => x.Text.ToLower().Contains(searchText.ToLower())));
                 }
-                return list;
-            
+
+            }
+            return list;
+
         }
 
 
@@ -62,7 +62,7 @@ namespace WPFLogFilter.Filter
                     return false;
                 }
 
-                if (pattern.All(ch=>Char.IsLetterOrDigit(ch)))
+                if (pattern.All(ch => Char.IsLetterOrDigit(ch)))
                 {
                     return false;
                 }
@@ -70,7 +70,7 @@ namespace WPFLogFilter.Filter
                 if (((!Char.IsLetterOrDigit(pattern[0])) && (!Char.IsLetterOrDigit(pattern[pattern.Length - 1]))))
 
                 {
-                    if (pattern.Any(ch=> Char.IsLetterOrDigit(ch)))
+                    if (pattern.Any(ch => Char.IsLetterOrDigit(ch)))
                     {
                         return true;
                     }
@@ -78,7 +78,7 @@ namespace WPFLogFilter.Filter
                     {
                         return false;
                     }
-                    
+
                 }
 
                 if ((pattern.Equals(pattern.Trim())) && (pattern.StartsWith(".")))

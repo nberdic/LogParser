@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition MinWidth="1000" Width="*"/>
+            <ColumnDefinition MinWidth="100" Width="*"/>
             <!--DataGrid-->
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
@@ -94,7 +94,7 @@
         <!--Level3-->
 
         <ScrollViewer Grid.Row="4" Grid.Column="1" VerticalScrollBarVisibility="Disabled" >
-            <Grid Height="530" >
+            <Grid Height="600" >
 
                 <DataGrid HeadersVisibility="None" CanUserAddRows="False" Name="MainDataGrid" ItemsSource="{Binding ListLoadLine}" AlternatingRowBackground="LightGray" 
                       AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -123,10 +123,10 @@
 
                     <DataGrid.Columns >
 
-                        <DataGridTextColumn Header="Line No." HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0}.}" MinWidth="50" Width="auto">
+                        <DataGridTextColumn Header="Line No." HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0}.}" MinWidth="54" Width="auto">
 
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Date/Time" HeaderStyle="{StaticResource CenterGridHeaderStyle}"  Binding="{Binding DateTime,UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd-MM-yyyy HH:mm:ss.fff}'}" Width="150" Visibility="{Binding Data.DateTimeIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" >
+                        <DataGridTextColumn Header="Date/Time" HeaderStyle="{StaticResource CenterGridHeaderStyle}"  Binding="{Binding DateTime,UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd-MM-yyyy HH:mm:ss.fff}'}" MinWidth="150" Width="150" Visibility="{Binding Data.DateTimeIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" >
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.HorizontalAlignment" Value="Center" />
@@ -139,10 +139,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Thread Id" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding ThreadId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="120" Visibility="{Binding  Data.ThreadIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Thread Id" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding ThreadId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="120" Width="120" Visibility="{Binding  Data.ThreadIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
 
-                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=Collapsed}" Width="100" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
-                        <DataGridTextColumn Header="Event Id" Visibility="{Binding  Data.EventIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" Binding="{Binding EventId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="85">
+                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=Collapsed}" MinWidth="100" Width="100" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Event Id" Visibility="{Binding  Data.EventIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" Binding="{Binding EventId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="85" Width="85">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.HorizontalAlignment" Value="Center" />
@@ -156,7 +156,7 @@
                         </DataGridTextColumn>
 
 
-                        <DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="300" MaxWidth="500">
+                        <DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="500" MaxWidth="500">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
@@ -164,7 +164,7 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn Header="Warning" HeaderStyle="{StaticResource CenterGridHeaderStyle}">
+                        <DataGridTemplateColumn Header="Warning" MinWidth="40" HeaderStyle="{StaticResource CenterGridHeaderStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button HorizontalContentAlignment="Right" MaxWidth="20" MaxHeight="20">

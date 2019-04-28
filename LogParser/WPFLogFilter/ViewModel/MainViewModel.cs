@@ -50,11 +50,12 @@ namespace WPFLogFilter.ViewModel
             GetVersion();
 
             ClickMenuCommand = new RelayCommand(SelectLogFile);
-          
-
+            CloseTabCommand = new RelayCommand<ITab>(CloseTab);
         }
 
         public RelayCommand ClickMenuCommand { get; set; }
+
+        public RelayCommand<ITab> CloseTabCommand { get; set; }
 
         public ObservableCollection<ITab> Tabs { get; set; }
 
@@ -119,8 +120,13 @@ namespace WPFLogFilter.ViewModel
 
         public void GetTabIndex()
         {
-            TabSelectIndex = Tabs.Count();
+            TabSelectIndex = Tabs.Count()-1;
             TabVisibility = true;
+        }
+
+        public void CloseTab(ITab selectedTab)
+        {
+            Tabs.Remove(selectedTab);
         }
 
     }

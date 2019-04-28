@@ -5,14 +5,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
 using WPFLogFilter.Parsing.ParseStrategy;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder;
 using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
 using WPFLogFilter.Tabs;
 
@@ -26,7 +22,6 @@ namespace WPFLogFilter.ViewModel
 
         private ObservableCollection<ObservableCollection<LogModel>> _listFilters;
 
-        private ObservableCollection<LogModel> _idList;
         private ObservableCollection<LogModel> _dateTimeList;
         private ObservableCollection<LogModel> _threadIdList;
         private ObservableCollection<LogModel> _logLevelList;
@@ -38,7 +33,6 @@ namespace WPFLogFilter.ViewModel
 
         private IList<LogLevelEnum> _logLvlComboEnumList;
         private LogLevelEnum _logLevelValues;
-
 
         private bool _idIsValid = false;
         private bool _dateTimeIsValid = false;
@@ -52,12 +46,11 @@ namespace WPFLogFilter.ViewModel
         private string _logFilePath;
         private string _tabFileName;
 
-        private string _logTextSearch = "";
-        private string _dateTimeSearch1 = "";
-        private string _dateTimeSearch2 = "";
+        private string _dateTimeSearch1 = "00:00:00";
+        private string _dateTimeSearch2 = "23:59:59";
         private string _threadIdSearch = "";
-        private string _logLevelSearch = "";
         private string _eventIdSearch = "";
+        private string _logTextSearch = "";
 
         public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory, string logFilePath)
         {
@@ -67,7 +60,6 @@ namespace WPFLogFilter.ViewModel
             _backupList = list;
             _logFilePath = logFilePath;
 
-            _idList = new ObservableCollection<LogModel>();
             _eventIdList = new ObservableCollection<LogModel>();
             _dateTimeList = new ObservableCollection<LogModel>();
             _threadIdList = new ObservableCollection<LogModel>();
@@ -80,7 +72,6 @@ namespace WPFLogFilter.ViewModel
             ExtractFileName();
 
             OpenNotepadCommand = new RelayCommand(OpenNotepad);
-
         }
 
         public RelayCommand OpenNotepadCommand { get; set; }
@@ -107,15 +98,7 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _caseSensitiveCheckBox, value);
-                IFilter filterFactory = _filterfactory.Create(6);
-                if (!_caseSensitiveCheckBox)
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
-                }
-                else
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
-                }
+                OnChangeCreateFilter();
             }
         }
 
@@ -169,32 +152,13 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public string LogTextSearch
-        {
-            get => _logTextSearch;
-            set
-            {
-                Set(ref _logTextSearch, value);
-                IFilter filterFactory = _filterfactory.Create(6);
-                if (!_caseSensitiveCheckBox)
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
-                }
-                else
-                {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
-                }
-            }
-        }
-
         public string DateTimeSearch1
         {
             get => _dateTimeSearch1;
             set
             {
                 Set(ref _dateTimeSearch1, value);
-                IFilter filterFactory = _filterfactory.Create(2);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+                OnChangeCreateFilter();
             }
         }
 
@@ -204,8 +168,7 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _dateTimeSearch2, value);
-                IFilter filterFactory = _filterfactory.Create(2);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+                OnChangeCreateFilter();
             }
         }
 
@@ -215,29 +178,7 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _threadIdSearch, value);
-                IFilter filterFactory = _filterfactory.Create(3);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch), 3);
-            }
-        }
-        public string LogLevelSearch
-        {
-            get => _logLevelSearch;
-            set
-            {
-                Set(ref _logLevelSearch, value);
-                IFilter filterFactory = _filterfactory.Create(4);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelSearch), 4);
-
-            }
-        }
-        public string EventIdSearch
-        {
-            get => _eventIdSearch;
-            set
-            {
-                Set(ref _eventIdSearch, value);
-                IFilter filterFactory = _filterfactory.Create(5);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch), 5);
+                OnChangeCreateFilter();
             }
         }
 
@@ -247,8 +188,27 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _logLevelValues, value);
-                IFilter filterFactory = _filterfactory.Create(4);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()), 5);
+                OnChangeCreateFilter();
+            }
+        }
+
+        public string EventIdSearch
+        {
+            get => _eventIdSearch;
+            set
+            {
+                Set(ref _eventIdSearch, value);
+                OnChangeCreateFilter();
+            }
+        }
+
+        public string LogTextSearch
+        {
+            get => _logTextSearch;
+            set
+            {
+                Set(ref _logTextSearch, value);
+                OnChangeCreateFilter();
             }
         }
 
@@ -279,7 +239,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public string TabFileName { get => _tabFileName;
+        public string TabFileName
+        {
+            get => _tabFileName;
             set
             {
                 Set(ref _tabFileName, value);
@@ -314,55 +276,63 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        public void OnChangeCreateFilter()
+        {
+            IFilter filterFactory;
+
+            filterFactory = _filterfactory.Create(2);
+            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+
+            filterFactory = _filterfactory.Create(3);
+            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch), 3);
+
+            filterFactory = _filterfactory.Create(4);
+            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()), 4);
+
+            filterFactory = _filterfactory.Create(5);
+            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch), 5);
+
+            filterFactory = _filterfactory.Create(6);
+            if (!_caseSensitiveCheckBox)
+            {
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
+            }
+            else
+            {
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
+            }
+        }
+
         public ObservableCollection<LogModel> AddRemoveFilter(ObservableCollection<LogModel> list, int caseNo)
         {
             switch (caseNo)
             {
                 case 2:
-                    if (_dateTimeList.Count != 0)
-                    {
-                        ListFilters.Remove(_dateTimeList);
-                    }
+                    ListFilters.Remove(_dateTimeList);
                     _dateTimeList = list;
                     break;
                 case 3:
-                    if (_threadIdList.Count != 0)
-                    {
-                        ListFilters.Remove(_threadIdList);
-                    }
+                    ListFilters.Remove(_threadIdList);
                     _threadIdList = list;
                     break;
                 case 4:
-                    if (_logLevelList.Count != 0)
-                    {
-                        ListFilters.Remove(_logLevelList);
-                    }
+                    ListFilters.Remove(_logLevelList);
                     _logLevelList = list;
                     break;
                 case 5:
-                    if (_eventIdList.Count != 0)
-                    {
-                        ListFilters.Remove(_eventIdList);
-                    }
+                    ListFilters.Remove(_eventIdList);
                     _eventIdList = list;
                     break;
                 case 6:
-                    if (_regexList.Count != 0)
-                    {
-                        ListFilters.Remove(_regexList);
-                    }
+                    ListFilters.Remove(_regexList);
                     _regexList = list;
-                    break;
-                default:
                     break;
             }
 
             if (list != null)
             {
-                if (list.Count != 0)
-                {
-                    ListFilters.Add(list);
-                }
+                ListFilters.Add(list);
+
                 IEnumerable<LogModel> filterResult = list;
                 if (ListFilters.Count() > 1)
                 {
@@ -384,7 +354,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void ExtractFileName ()
+        public void ExtractFileName()
         {
             string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
             TabFileName = results[results.Length - 1];
@@ -394,6 +364,7 @@ namespace WPFLogFilter.ViewModel
         {
             Process.Start("notepad.exe", _logFilePath);
         }
+
     }
 
 
