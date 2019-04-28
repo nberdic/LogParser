@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WPFLogFilter.ViewModel"
         xmlns:controls="clr-namespace:WPFLogFilter.Controls"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         mc:Ignorable="d" SizeToContent="Width" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1000"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
@@ -41,7 +42,37 @@
                 <!--<RowDefinition Height="20"/>-->
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <TabControl Name="TabMain" SelectedIndex="{Binding TabSelectIndex}" Grid.Row="1" ItemsSource="{Binding Tabs}" Visibility="{Binding Path=TabVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" >
+
+            <dragablz:TabablzControl
+            Visibility="{Binding Path=TabVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
+            SelectedIndex="{Binding TabSelectIndex}"
+            Name="TabMain"
+            ItemsSource="{Binding Tabs}"            
+       
+            >
+                <dragablz:TabablzControl.HeaderItemTemplate>
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                <Run Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                            </TextBlock>
+                            <TextBlock>
+                            <Hyperlink Command="{Binding DataContext.CloseTabCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding ElementName=TabMain,Path=SelectedItem}" TextDecorations="None"> X </Hyperlink>
+                            <Thumb dragablz:DragablzItem.IsCustomThumb="True" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </dragablz:TabablzControl.HeaderItemTemplate>
+
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate>
+                        <controls:TabUserControl/>
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
+
+
+            <!--<TabControl Name="TabMain" SelectedIndex="{Binding TabSelectIndex}" Grid.Row="1" ItemsSource="{Binding Tabs}" Visibility="{Binding Path=TabVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" >
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel HorizontalAlignment="Left">
@@ -58,7 +89,7 @@
                         <controls:TabUserControl/>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
-            </TabControl>
+            </TabControl>-->
         </Grid>
     </Grid>
 

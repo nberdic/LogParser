@@ -127,6 +127,10 @@ namespace WPFLogFilter.ViewModel
         public void CloseTab(ITab selectedTab)
         {
             Tabs.Remove(selectedTab);
+            if (Tabs.Count==0)
+            {
+                TabVisibility = false;
+            }
         }
 
     }
