@@ -31,8 +31,12 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="1">
-            <Menu >
-                <MenuItem Header="_Open.." Command="{Binding ClickMenuCommand}"/>
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open.." Command="{Binding ClickMenuCommand}"/>
+                    <MenuItem Header="_Open in notepad.." Command="{Binding ClickOpenNotepadCommand}"/>
+                    <MenuItem Header="_Exit" Command="{Binding ExitCommand}"/>
+                </MenuItem>
             </Menu>
         </Grid>
 

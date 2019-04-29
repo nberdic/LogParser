@@ -90,6 +90,7 @@
     <Compile Include="Filter\LogLevelFilter.cs" />
     <Compile Include="Filter\RegexFilter.cs" />
     <Compile Include="Filter\ThreadIdFilter.cs" />
+    <Compile Include="Model\FileModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="Parsing\ParseFactory\IParsingFactory.cs" />
     <Compile Include="Parsing\ParseFactory\ParsingFactory.cs" />

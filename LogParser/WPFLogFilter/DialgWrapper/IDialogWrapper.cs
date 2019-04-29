@@ -1,10 +1,10 @@
-﻿using System.Collections;
-
+﻿using System.Collections.Generic;
+using WPFLogFilter.Model;
 
 namespace WPFLogFilter.DialogWrapperFolder
 {
     public interface IDialogWrapper
     {
-        string[] GetLines(ref string fileName);
+        List<FileModel> GetLines();
     }
 }

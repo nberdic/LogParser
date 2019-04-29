@@ -1,20 +1,13 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using WPFLogFilter.DialogWrapperFolder;
-using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
-using WPFLogFilter.Parsing.ParseStrategy;
 using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder;
 using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
 using WPFLogFilter.Tabs;
@@ -27,12 +20,9 @@ namespace WPFLogFilter.ViewModel
 
         private IDialogWrapper _dialogWrapper;
         private IParsingFactory _parsingFactory;
-
         private IParsingStrategy _parsingStrategy;
-
         private IFilterFactory _filterFactory;
 
-        private string _titleFileName;
         private string _titleVersion;
         private string _tabFileName;
         private int _tabSelectIndex;
@@ -51,10 +41,13 @@ namespace WPFLogFilter.ViewModel
 
             ClickMenuCommand = new RelayCommand(SelectLogFile);
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
+            ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
+            ExitCommand = new RelayCommand(ExitApplication);
         }
 
         public RelayCommand ClickMenuCommand { get; set; }
-
+        public RelayCommand ClickOpenNotepadCommand { get; set; }
+        public RelayCommand ExitCommand { get; set; }
         public RelayCommand<ITab> CloseTabCommand { get; set; }
 
         public ObservableCollection<ITab> Tabs { get; set; }
@@ -86,29 +79,31 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public bool TabVisibility { get => _tabVisibility;
+        public bool TabVisibility
+        {
+            get => _tabVisibility;
             set
             {
                 Set(ref _tabVisibility, value);
             }
         }
 
-       
-
         public void SelectLogFile()
         {
-            PopulateList(_dialogWrapper.GetLines(ref _titleFileName));
+            PopulateList(_dialogWrapper.GetLines());
         }
 
-        public void PopulateList(string[] lines)
+        public void PopulateList(List<FileModel> listFileInfo)
         {
-            if (lines != null)
+            if (listFileInfo != null)
             {
-                _parsingStrategy = _parsingFactory.Create(lines);
-                _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(lines));
-
-                Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, _titleFileName));
-                GetTabIndex();
+                foreach (FileModel file in listFileInfo)
+                {
+                    _parsingStrategy = _parsingFactory.Create(file.FileData);
+                    _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(file.FileData));
+                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, file.FilePath));
+                    GetTabIndex();
+                }
             }
         }
 
@@ -120,14 +115,31 @@ namespace WPFLogFilter.ViewModel
 
         public void GetTabIndex()
         {
-            TabSelectIndex = Tabs.Count()-1;
+            TabSelectIndex = Tabs.Count() - 1;
             TabVisibility = true;
+        }
+
+        public void OpenNotepad()
+        {
+            List<FileModel> temp = _dialogWrapper.GetLines();
+            if (temp!=null)
+            {
+                foreach (FileModel file in temp)
+                {
+                    Process.Start("notepad.exe", file.FilePath);
+                }
+            }
+        }
+
+        public void ExitApplication()
+        {
+            Application.Current.Shutdown();
         }
 
         public void CloseTab(ITab selectedTab)
         {
             Tabs.Remove(selectedTab);
-            if (Tabs.Count==0)
+            if (Tabs.Count == 0)
             {
                 TabVisibility = false;
             }
