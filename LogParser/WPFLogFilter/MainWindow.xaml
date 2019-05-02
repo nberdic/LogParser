@@ -8,7 +8,7 @@
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:controls="clr-namespace:WPFLogFilter.Controls"
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz" AllowDrop="True"
-        mc:Ignorable="d" SizeToContent="Width" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1000"
+        mc:Ignorable="d" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1000"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
 
@@ -25,15 +25,12 @@
     </i:Interaction.Triggers>
 
     <Grid>
-            
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <!--tab-->
-            <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
+
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
