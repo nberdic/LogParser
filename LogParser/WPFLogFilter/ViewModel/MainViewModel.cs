@@ -125,7 +125,7 @@ namespace WPFLogFilter.ViewModel
         public void OpenNotepad()
         {
             List<FileModel> temp = _dialogWrapper.GetLines();
-            if (temp!=null)
+            if (temp != null)
             {
                 foreach (FileModel file in temp)
                 {
@@ -150,13 +150,16 @@ namespace WPFLogFilter.ViewModel
 
         public void OpenDroppedFiles(DragEventArgs e)
         {
-            string[] filePathList= (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            string[] filePathList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             List<FileModel> tempList = new List<FileModel>();
 
             foreach (string file in filePathList)
             {
-                tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
+                if (file.EndsWith("txt") || (file.EndsWith("log")))
+                {
+                    tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
+                }
             }
 
             PopulateList(tempList);
