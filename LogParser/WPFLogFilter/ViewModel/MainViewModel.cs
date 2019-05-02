@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using WPFLogFilter.DialogWrapperFolder;
@@ -43,12 +44,14 @@ namespace WPFLogFilter.ViewModel
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
             ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
             ExitCommand = new RelayCommand(ExitApplication);
+            DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
         }
 
         public RelayCommand ClickMenuCommand { get; set; }
         public RelayCommand ClickOpenNotepadCommand { get; set; }
-        public RelayCommand ExitCommand { get; set; }
         public RelayCommand<ITab> CloseTabCommand { get; set; }
+        public RelayCommand ExitCommand { get; set; }
+        public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
 
         public ObservableCollection<ITab> Tabs { get; set; }
 
@@ -131,11 +134,6 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void ExitApplication()
-        {
-            Application.Current.Shutdown();
-        }
-
         public void CloseTab(ITab selectedTab)
         {
             Tabs.Remove(selectedTab);
@@ -145,5 +143,23 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        public void ExitApplication()
+        {
+            Application.Current.Shutdown();
+        }
+
+        public void OpenDroppedFiles(DragEventArgs e)
+        {
+            string[] filePathList= (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            List<FileModel> tempList = new List<FileModel>();
+
+            foreach (string file in filePathList)
+            {
+                tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
+            }
+
+            PopulateList(tempList);
+        }
     }
 }

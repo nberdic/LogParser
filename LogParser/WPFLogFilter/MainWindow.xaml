@@ -4,16 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WPFLogFilter.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:controls="clr-namespace:WPFLogFilter.Controls"
-        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz" AllowDrop="True"
         mc:Ignorable="d" SizeToContent="Width" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1000"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     </Window.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Drop">
+            <cmd:EventToCommand Command="{Binding Mode=OneWay, Path=DropInFileCommand}"
+                        PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Grid>
+            
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -56,7 +68,7 @@
                 <dragablz:TabablzControl.HeaderItemTemplate>
                     <DataTemplate >
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="0,0,5,0" Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                            <TextBlock Margin="0,0,5,0">
                                 <Run Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                             </TextBlock>
                             <TextBlock>
