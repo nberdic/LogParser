@@ -12,7 +12,15 @@ namespace WPFLogFilter.Filter
     {
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search)
         {
+            int noDateSensitive = 0;
             string[] times = search.Split('+');
+
+            if (times[1].EndsWith("¢"))
+            {
+                noDateSensitive = 1;
+                times[1] = times[1].Remove(times[1].Length - 1);
+                search = search.Remove(search.Length - 1);
+            }
 
             if (search.Length == 17)
             {
@@ -29,12 +37,24 @@ namespace WPFLogFilter.Filter
                 if ((date != DateTime.MinValue) && (DateTime.TryParse(date.ToShortDateString() + " " + times[0], out DateTime dt1))
                     && (DateTime.TryParse(date.ToShortDateString() + " " + times[1], out DateTime dt2)))
                 {
-                    dt2 = dt2.AddSeconds(1);
-                    var query = (from item in list
-                                 where (item.DateTime <= dt2) && (item.DateTime >= dt1)
-                                 select item).ToList();
+                    if (noDateSensitive == 1)
+                    {
+                        dt2 = dt2.AddSeconds(1);
+                        var query = (from item in list
+                                     where (((item.DateTime > DateTime.MinValue && item.DateTime <= dt2) && item.DateTime >= dt1) || item.DateTime == DateTime.MinValue)
+                                     select item).ToList();
 
-                    return new ObservableCollection<LogModel>(query);
+                        return new ObservableCollection<LogModel>(query);
+                    }
+                    else
+                    {
+                        dt2 = dt2.AddSeconds(1);
+                        var query = (from item in list
+                                     where (item.DateTime <= dt2) && (item.DateTime >= dt1)
+                                     select item).ToList();
+
+                        return new ObservableCollection<LogModel>(query);
+                    }
                 }
 
                 else
@@ -47,9 +67,6 @@ namespace WPFLogFilter.Filter
             {
                 return list;
             }
-
-
-
         }
     }
 }

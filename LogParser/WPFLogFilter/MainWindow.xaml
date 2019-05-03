@@ -25,17 +25,14 @@
     </i:Interaction.Triggers>
 
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
-
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
             <ColumnDefinition MinWidth="1000" Width="*"/>
-            <!--DataGrid-->
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
@@ -52,7 +49,6 @@
         <!--level 0-->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <!--<RowDefinition Height="20"/>-->
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 

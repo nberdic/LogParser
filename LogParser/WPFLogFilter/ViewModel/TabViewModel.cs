@@ -41,6 +41,7 @@ namespace WPFLogFilter.ViewModel
         private bool _eventIdIsValid = false;
         private bool _textIsValid = false;
         private bool _caseSensitiveCheckBox = true;
+        private bool _noDateCheckBox = true;
         private bool _openFileIsValid = false;
 
         private string _logFilePath;
@@ -70,11 +71,7 @@ namespace WPFLogFilter.ViewModel
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
             ExtractFileName();
-
-            OpenNotepadCommand = new RelayCommand(OpenNotepad);
         }
-
-        public RelayCommand OpenNotepadCommand { get; set; }
 
         public ObservableCollection<LogModel> ListLoadLine
         {
@@ -98,6 +95,16 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _caseSensitiveCheckBox, value);
+                OnChangeCreateFilter();
+            }
+        }
+
+        public bool NoDateCheckBox
+        {
+            get => _noDateCheckBox;
+            set
+            {
+                Set(ref _noDateCheckBox, value);
                 OnChangeCreateFilter();
             }
         }
@@ -248,6 +255,8 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        
+
         public void ToggleColumnVisibility()
         {
             IdIsValid = true;
@@ -281,7 +290,14 @@ namespace WPFLogFilter.ViewModel
             IFilter filterFactory;
 
             filterFactory = _filterfactory.Create(2);
-            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+            if (_noDateCheckBox)
+            {
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2 + "¢"), 2);
+            }
+            else
+            {
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+            }
 
             filterFactory = _filterfactory.Create(3);
             ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch), 3);
@@ -358,11 +374,6 @@ namespace WPFLogFilter.ViewModel
         {
             string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
             TabFileName = results[results.Length - 1];
-        }
-
-        public void OpenNotepad()
-        {
-            Process.Start("notepad.exe", _logFilePath);
         }
 
     }

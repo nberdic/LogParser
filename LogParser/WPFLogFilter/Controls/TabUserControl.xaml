@@ -29,21 +29,20 @@
         </Grid.ColumnDefinitions>
 
         <!--Level1-->
-
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Text="ID" Visibility="{Binding Path=IdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left"/>
         <TextBlock Width="175" Grid.Row="0" Grid.Column="1" Text="DATE/TIME - FORMAT(HH:mm:ss)" Visibility="{Binding Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
-        <TextBlock Width="101" Grid.Row="0" Grid.Column="2" Text="THREADID" Visibility="{Binding Path=ThreadIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
+        <TextBlock Width="100" Grid.Row="0" Grid.Column="2" Text="THREADID" Visibility="{Binding Path=ThreadIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
         <TextBlock Width="100" Grid.Row="0" Grid.Column="3" Text="LOGLEVEL" Visibility="{Binding Path=LogLevelIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
         <TextBlock Width="86" Grid.Row="0" Grid.Column="4" Text="EVENTID" Visibility="{Binding Path=EventIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
         <StackPanel Grid.Row="0" Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding Path=TextIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
             <TextBlock Text="TEXT" Margin="0,0,12,0"  TextAlignment="Center" />
             <TextBlock Text="Case Sensitive" Margin="0,0,3,0" TextAlignment="Left" />
-            <CheckBox IsChecked="{Binding Path=CaseSensitiveCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=CaseSensitiveCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="Show no-date lines" Margin="0,0,3,0" TextAlignment="Left" />
+            <CheckBox IsChecked="{Binding Path=NoDateCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <!--<Button Grid.Row="0" Grid.Column="8" Command="{Binding OpenNotepadCommand}" Content="Open in notepad" MinHeight="10" MinWidth="10" Visibility="{Binding Path=OpenFileIsValid,Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}"/>-->
 
-
-
+        <!--Level2-->
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=DateTimeIsValid, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
             <TextBox MinWidth="69" TextAlignment="Center" Text="{Binding Path=DateTimeSearch1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Text=" - "/>
@@ -58,13 +57,10 @@
         <TextBox Grid.Row="1" Grid.Column="4" Margin="10,0,10,0" TextAlignment="Center" Text="{Binding Path=EventIdSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=EventIdIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}"/>
 
         <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Path=LogTextSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=TextIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left"/>
-
-
-
+        
         <!--Level3-->
-
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="6">
-            <Grid Height="900">
+            <Grid Height="615">
 
                 <DataGrid HeadersVisibility="None" CanUserAddRows="False" Name="MainDataGrid" ItemsSource="{Binding ListLoadLine}" AlternatingRowBackground="LightGray" ScrollViewer.CanContentScroll="True"
                       AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -173,6 +169,5 @@
         </ScrollViewer>
 
     </Grid>
-
 
 </UserControl>
