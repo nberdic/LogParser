@@ -12,14 +12,15 @@
     </UserControl.Resources>
 
     <Grid>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="54"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
@@ -29,47 +30,97 @@
         </Grid.ColumnDefinitions>
 
         <!--Level1-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Text="ID" Visibility="{Binding Path=IdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left"/>
-        <TextBlock Width="175" Grid.Row="0" Grid.Column="1" Text="DATE/TIME - FORMAT(HH:mm:ss)" Visibility="{Binding Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
-        <TextBlock Width="100" Grid.Row="0" Grid.Column="2" Text="THREADID" Visibility="{Binding Path=ThreadIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
-        <TextBlock Width="100" Grid.Row="0" Grid.Column="3" Text="LOGLEVEL" Visibility="{Binding Path=LogLevelIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
-        <TextBlock Width="86" Grid.Row="0" Grid.Column="4" Text="EVENTID" Visibility="{Binding Path=EventIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Center" />
-        <StackPanel Grid.Row="0" Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding Path=TextIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
-            <TextBlock Text="TEXT" Margin="0,0,12,0"  TextAlignment="Center" />
-            <TextBlock Text="Case Sensitive" Margin="0,0,3,0" TextAlignment="Left" />
-            <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=CaseSensitiveCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Show no-date lines" Margin="0,0,3,0" TextAlignment="Left" />
-            <CheckBox IsChecked="{Binding Path=NoDateCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-        </StackPanel>
+        <Border  Grid.Row="0" Grid.Column="0" BorderThickness="2,2,0,2" BorderBrush="Black"
+                 Visibility="{Binding Path=IdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, 
+                 Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBlock Margin="5,0,0,0" MinWidth="59" Text="ID" TextAlignment="Left"/>
+        </Border>
+        <Border  Grid.Row="0" Grid.Column="1" BorderThickness="2,2,0,2" BorderBrush="Black" Visibility="{Binding   Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBlock Width="216" Text="DATE/TIME - FORMAT(HH:mm:ss)" TextAlignment="Center" />
+        </Border>
+        <Border  Grid.Row="0" Grid.Column="2" BorderThickness="2,2,0,2" BorderBrush="Black" Visibility="{Binding Path=ThreadIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBlock Width="101" Text="THREADID" TextAlignment="Center" />
+        </Border>
+        <Border  Grid.Row="0" Grid.Column="3" BorderThickness="2,2,0,2" BorderBrush="Black" Visibility="{Binding Path=LogLevelIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBlock Width="101" Text="LOGLEVEL" TextAlignment="Center" />
+        </Border>
+        <Border BorderThickness="2,2,0,2" BorderBrush="Black" Grid.Row="0" Grid.Column="4" Visibility="{Binding Path=EventIdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBlock Width="84" Grid.Row="0" Grid.Column="4" Text="EVENTID" TextAlignment="Center" />
+        </Border>
+        <Border BorderThickness="2" BorderBrush="Black" Grid.Row="0" Grid.Column="5" Visibility="{Binding Path=TextIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                <TextBlock Text="TEXT" Margin="12,0,12,0"  TextAlignment="Center" />
+                <TextBlock Text="Case Sensitive" Margin="0,0,3,0" TextAlignment="Left" />
+                <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=CaseSensitiveCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Show no-date lines" Margin="0,0,3,0" Visibility="{Binding Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left" />
+                <CheckBox IsChecked="{Binding Path=NoDateCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" />
+            </StackPanel>
+        </Border>
 
         <!--Level2-->
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=DateTimeIsValid, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
-            <TextBox MinWidth="69" TextAlignment="Center" Text="{Binding Path=DateTimeSearch1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Text=" - "/>
-            <TextBox MinWidth="69" TextAlignment="Center" Text="{Binding Path=DateTimeSearch2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
+        <Border BorderThickness="2,0,0,0" BorderBrush="Black" Grid.Row="1" Grid.Column="1" Visibility="{Binding Path=DateTimeIsValid, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <StackPanel Margin="5,0,0,5" Orientation="Horizontal" HorizontalAlignment="Center" >
+                <TextBox MinWidth="69" TextAlignment="Center" Text="{Binding Path=DateTimeSearch1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text=" - "/>
+                <TextBox MinWidth="69" TextAlignment="Center" Text="{Binding Path=DateTimeSearch2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </Border>
 
-        <TextBox Grid.Row="1" Grid.Column="2" Margin="10,0,10,0" TextAlignment="Center" Text="{Binding Path=ThreadIdSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=ThreadIdIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" />
+        <Border BorderThickness="2,0,0,0" BorderBrush="Black" Grid.Row="1" Grid.Column="2" Visibility="{Binding Path=ThreadIdIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBox Margin="10,0,10,5" TextAlignment="Center" Text="{Binding Path=ThreadIdSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
 
-        <ComboBox Grid.Row="1" Grid.Column="3" Margin="10,0,10,0" Height="35" Name="LogLevel" SelectedValue="{Binding Path=LogLevelValues,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LogLvlComboEnumList}" Visibility="{Binding Path=LogLevelIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}"
-                      SelectedIndex="0" HorizontalContentAlignment="Center"/>
+        <Border BorderThickness="2,0,0,0" BorderBrush="Black" Grid.Row="1" Grid.Column="3" Visibility="{Binding Path=LogLevelIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <ComboBox Margin="10,0,10,0" Height="35" Name="LogLevel" SelectedValue="{Binding Path=LogLevelValues,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LogLvlComboEnumList}" SelectedIndex="0" HorizontalContentAlignment="Center"/>
+        </Border>
 
-        <TextBox Grid.Row="1" Grid.Column="4" Margin="10,0,10,0" TextAlignment="Center" Text="{Binding Path=EventIdSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=EventIdIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}"/>
+        <Border BorderThickness="2,0,0,0" BorderBrush="Black" Grid.Row="1" Grid.Column="4" Visibility="{Binding Path=EventIdIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBox Margin="10,0,10,5" TextAlignment="Center" Text="{Binding Path=EventIdSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        </Border>
 
-        <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding Path=LogTextSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=TextIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left"/>
-        
+        <Border BorderThickness="2,0,2,0" BorderBrush="Black" Grid.Row="1" Grid.Column="5" Visibility="{Binding Path=TextIsValid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+            <TextBox Margin="12,0,12,5" Text="{Binding Path=LogTextSearch,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Left"/>
+        </Border>
+
         <!--Level3-->
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="6">
             <Grid Height="615">
 
-                <DataGrid HeadersVisibility="None" CanUserAddRows="False" Name="MainDataGrid" ItemsSource="{Binding ListLoadLine}" AlternatingRowBackground="LightGray" ScrollViewer.CanContentScroll="True"
-                      AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <DataGrid SelectionMode="Extended" SelectionUnit="FullRow" IsReadOnly="True" BorderThickness="2"  HeadersVisibility="None" CanUserAddRows="False" Name="MainDataGrid" ItemsSource="{Binding ListLoadLine}" ScrollViewer.CanContentScroll="True"
+                      AutoGenerateColumns="False" AlternationCount="2"
+                          >
 
                     <DataGrid.Resources>
-                        <Style TargetType="DataGridColumnHeader">
+                        <!--<Style TargetType="DataGridColumnHeader">
                             <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                            <Setter Property="BorderThickness" Value="1,1,1,1"/>
                             <Setter Property="BorderBrush" Value="Black"/>
+                        </Style>-->
+
+                        <Style TargetType="DataGrid">
+                            <Setter Property="FontWeight" Value="Normal"/>
+                            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                        </Style>
+
+                        <!--<Style TargetType="DataGrid">
+                            <Setter Property="BorderThickness" Value="2,2,2,2"/>
+                        </Style>-->
+
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Style.Triggers>
+
+                                <Trigger Property="AlternationIndex" Value="0">
+                                    <Setter Property="Background" Value="White" />
+                                </Trigger>
+                                <Trigger Property="AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="LightGray" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True" >
+                                    <Setter Property="Background" Value="Red" />
+                                </Trigger>
+
+                            </Style.Triggers>
                         </Style>
 
                         <local1:BindingProxy x:Key="proxy" Data="{Binding}" />
@@ -89,10 +140,9 @@
 
                     <DataGrid.Columns >
 
-                        <DataGridTextColumn Header="Line No." HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0}.}" MinWidth="54" Width="auto">
+                        <DataGridTextColumn Header="Line No." HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Id,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0}.}" MinWidth="65" Width="auto"/>
 
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Date/Time" HeaderStyle="{StaticResource CenterGridHeaderStyle}"  Binding="{Binding DateTime,UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd-MM-yyyy HH:mm:ss.fff}'}" MinWidth="176" Width="150" Visibility="{Binding Data.DateTimeIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" >
+                        <DataGridTextColumn Header="Date/Time" HeaderStyle="{StaticResource CenterGridHeaderStyle}"  Binding="{Binding DateTime,UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:dd-MM-yyyy HH:mm:ss.fff}'}" MinWidth="218" Width="150" Visibility="{Binding Data.DateTimeIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" >
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.HorizontalAlignment" Value="Center" />
@@ -105,10 +155,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Thread Id" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding ThreadId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="100" Width="100" Visibility="{Binding  Data.ThreadIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Thread Id" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding ThreadId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="103" Visibility="{Binding  Data.ThreadIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
 
-                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=Collapsed}" MinWidth="100" Width="100" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
-                        <DataGridTextColumn Header="Event Id" Visibility="{Binding  Data.EventIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" Binding="{Binding EventId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="85" Width="85">
+                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=Collapsed}" Width="103" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Event Id" Visibility="{Binding  Data.EventIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" Binding="{Binding EventId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"  Width="86">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.HorizontalAlignment" Value="Center" />
