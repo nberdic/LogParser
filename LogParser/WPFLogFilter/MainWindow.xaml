@@ -16,7 +16,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz" AllowDrop="True"
-        mc:Ignorable="d" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1000"
+        mc:Ignorable="d" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1220"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
 
