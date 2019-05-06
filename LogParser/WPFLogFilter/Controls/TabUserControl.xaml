@@ -91,21 +91,12 @@
                           >
 
                     <DataGrid.Resources>
-                        <!--<Style TargetType="DataGridColumnHeader">
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="BorderThickness" Value="1,1,1,1"/>
-                            <Setter Property="BorderBrush" Value="Black"/>
-                        </Style>-->
 
                         <Style TargetType="DataGrid">
                             <Setter Property="FontWeight" Value="Normal"/>
                             <Setter Property="BorderThickness" Value="1,1,1,1"/>
                             <Setter Property="BorderBrush" Value="Black"/>
                         </Style>
-
-                        <!--<Style TargetType="DataGrid">
-                            <Setter Property="BorderThickness" Value="2,2,2,2"/>
-                        </Style>-->
 
                         <Style TargetType="{x:Type DataGridRow}">
                             <Style.Triggers>
@@ -217,7 +208,5 @@
                 </DataGrid>
             </Grid>
         </ScrollViewer>
-
     </Grid>
-
 </UserControl>

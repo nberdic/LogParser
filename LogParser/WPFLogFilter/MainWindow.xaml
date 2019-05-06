@@ -73,7 +73,7 @@
                                 <Run Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                             </TextBlock>
                             <TextBlock>
-                            <Hyperlink Command="{Binding DataContext.CloseTabCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding ElementName=TabMain,Path=SelectedItem}" TextDecorations="None">X</Hyperlink>
+                            <Hyperlink Command="{Binding DataContext.CloseTabCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" TextDecorations="None">X</Hyperlink>
                             </TextBlock>
                         </StackPanel>
                     </DataTemplate>

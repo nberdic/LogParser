@@ -375,9 +375,5 @@ namespace WPFLogFilter.ViewModel
             string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
             TabFileName = results[results.Length - 1];
         }
-
     }
-
-
-
 }
