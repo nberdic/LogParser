@@ -23,7 +23,7 @@ namespace WPFLogFilter.DialogWrapperFolder
                 }
                 return tempList;
             }
-            return null;
+            return tempList;
         }
     }
 }

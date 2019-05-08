@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AsmblyWrapper\AssemblyWrapper.cs" />
     <Compile Include="Controls\TabUserControl.xaml.cs">
       <DependentUpon>TabUserControl.xaml</DependentUpon>
     </Compile>
@@ -99,6 +100,7 @@
     <Compile Include="Filter\LogLevelFilter.cs" />
     <Compile Include="Filter\RegexFilter.cs" />
     <Compile Include="Filter\ThreadIdFilter.cs" />
+    <Compile Include="AsmblyWrapper\IAssemblyWrapper.cs" />
     <Compile Include="Model\FileModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="Parsing\ParseFactory\IParsingFactory.cs" />

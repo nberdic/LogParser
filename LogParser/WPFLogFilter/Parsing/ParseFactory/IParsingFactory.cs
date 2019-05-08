@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
+using WPFLogFilter.Parsing.ParseStrategy;
 
-namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder
+namespace WPFLogFilter.Parsing.ParsingFactory
 {
     public interface IParsingFactory
     {

@@ -1,15 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
 using WPFLogFilter.Parsing.ParseStrategy;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
 using WPFLogFilter.Tabs;
 
 namespace WPFLogFilter.ViewModel
@@ -255,9 +252,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        
-
-        public void ToggleColumnVisibility()
+        private void ToggleColumnVisibility()
         {
             IdIsValid = true;
             LogLevelIsValid = true;
@@ -285,7 +280,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void OnChangeCreateFilter()
+        private void OnChangeCreateFilter()
         {
             IFilter filterFactory;
 
@@ -319,7 +314,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public ObservableCollection<LogModel> AddRemoveFilter(ObservableCollection<LogModel> list, int caseNo)
+        private ObservableCollection<LogModel> AddRemoveFilter(ObservableCollection<LogModel> list, int caseNo)
         {
             switch (caseNo)
             {
@@ -370,10 +365,13 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void ExtractFileName()
+        private void ExtractFileName()
         {
-            string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            TabFileName = results[results.Length - 1];
+            if (!String.IsNullOrEmpty(_logFilePath))
+            {
+                string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                TabFileName = results[results.Length - 1];
+            }
         }
     }
 }

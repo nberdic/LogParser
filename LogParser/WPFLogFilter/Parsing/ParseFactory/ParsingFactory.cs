@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPFLogFilter.Model;
-using WPFLogFilter.Parsing.ParseStrategy;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
+﻿using WPFLogFilter.Parsing.ParseStrategy;
 
-namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder
+namespace WPFLogFilter.Parsing.ParsingFactory
 {
     public class ParsingFactory : IParsingFactory
     {
@@ -17,6 +9,11 @@ namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder
             int counterFull = 0;
             int counterNoThread = 0;
             int counterNoEvent = 0;
+
+            if (lines == null)
+            {
+                return new StringOnlyParsingStrategy();
+            }
 
             for (int x = 0; x < lines.Length; x++)
             {
@@ -37,7 +34,6 @@ namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder
                         {
                             counterNoEvent++;
                         }
-
                         break;
                     default:
                         break;

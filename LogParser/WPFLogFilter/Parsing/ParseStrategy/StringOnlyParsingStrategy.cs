@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPFLogFilter.Model;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
 
 namespace WPFLogFilter.Parsing.ParseStrategy
 {

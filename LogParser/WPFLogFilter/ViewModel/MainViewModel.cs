@@ -1,16 +1,18 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder;
+using WPFLogFilter.Parsing.ParseStrategy;
+using WPFLogFilter.Parsing.ParsingFactory;
 using WPFLogFilter.Tabs;
 
 namespace WPFLogFilter.ViewModel
@@ -20,6 +22,7 @@ namespace WPFLogFilter.ViewModel
         private ObservableCollection<LogModel> _listLoadLine;
 
         private IDialogWrapper _dialogWrapper;
+        private IAssemblyWrapper _assemblyWrapper;
         private IParsingFactory _parsingFactory;
         private IParsingStrategy _parsingStrategy;
         private IFilterFactory _filterFactory;
@@ -29,11 +32,12 @@ namespace WPFLogFilter.ViewModel
         private int _tabSelectIndex;
         private bool _tabVisibility = false;
 
-        public MainViewModel(IDialogWrapper dialogWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory)
+        public MainViewModel(IDialogWrapper dialogWrapper, IAssemblyWrapper assemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory)
         {
-            _dialogWrapper = dialogWrapper;
-            _parsingFactory = iParsingFactory;
-            _filterFactory = iFilterFactory;
+            _dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
+            _assemblyWrapper = assemblyWrapper ?? throw new ArgumentNullException(nameof(assemblyWrapper));
+            _parsingFactory = iParsingFactory ?? throw new ArgumentNullException(nameof(iParsingFactory));
+            _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
 
             _listLoadLine = new ObservableCollection<LogModel>();
             Tabs = new ObservableCollection<ITab>();
@@ -91,18 +95,23 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void SelectLogFile()
+        private void SelectLogFile()
         {
             PopulateList(_dialogWrapper.GetLines());
         }
 
-        public void PopulateList(List<FileModel> listFileInfo)
+        private void PopulateList(List<FileModel> listFileInfo)
         {
-            if (listFileInfo != null)
+            if (listFileInfo !=null)
             {
                 foreach (FileModel file in listFileInfo)
                 {
                     _parsingStrategy = _parsingFactory.Create(file.FileData);
+                    var parsingCollection = _parsingStrategy.Parse(file.FileData);
+                    if (parsingCollection == null)
+                    {
+                        return;
+                    }
                     _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(file.FileData));
                     Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, file.FilePath));
                     GetTabIndex();
@@ -110,19 +119,18 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void GetVersion()
+        private void GetVersion()
         {
-            string version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
-            TitleVersion = "LogParser v" + version;
+            TitleVersion = "LogParser v" + _assemblyWrapper.GetVersion();
         }
 
-        public void GetTabIndex()
+        private void GetTabIndex()
         {
             TabSelectIndex = Tabs.Count() - 1;
             TabVisibility = true;
         }
 
-        public void OpenNotepad()
+        private void OpenNotepad()
         {
             List<FileModel> temp = _dialogWrapper.GetLines();
             if (temp != null)
@@ -134,7 +142,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void CloseTab(ITab selectedTab)
+        private void CloseTab(ITab selectedTab)
         {
             Tabs.Remove(selectedTab);
             if (Tabs.Count == 0)
@@ -143,12 +151,12 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public void ExitApplication()
+        private void ExitApplication()
         {
             Application.Current.Shutdown();
         }
 
-        public void OpenDroppedFiles(DragEventArgs e)
+        private void OpenDroppedFiles(DragEventArgs e)
         {
             string[] filePathList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
@@ -161,7 +169,6 @@ namespace WPFLogFilter.ViewModel
                     tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
                 }
             }
-
             PopulateList(tempList);
         }
     }

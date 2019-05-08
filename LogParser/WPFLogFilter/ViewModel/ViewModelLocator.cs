@@ -16,9 +16,10 @@ using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
+using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
-using WPFLogFilter.ParsingFactoryStrategyFolder.ParsingFactoryFolder;
+using WPFLogFilter.Parsing.ParsingFactory;
 //using Microsoft.Practices.ServiceLocation;
 
 namespace WPFLogFilter.ViewModel
@@ -38,8 +39,10 @@ namespace WPFLogFilter.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<IDialogWrapper, DialogWrapper>();
+            SimpleIoc.Default.Register<IAssemblyWrapper, AssemblyWrapper>();
             SimpleIoc.Default.Register<IParsingFactory, ParsingFactory>();
             SimpleIoc.Default.Register<IFilterFactory, FilterFactory>();
+            
 
             SimpleIoc.Default.Register<TabViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();

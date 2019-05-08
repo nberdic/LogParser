@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WPFLogFilter.Model;
 
-namespace WPFLogFilter.ParsingFactoryStrategyFolder.ParsingStrategyFolder
+namespace WPFLogFilter.Parsing.ParseStrategy
 {
     public class FullParsingStrategy : IParsingStrategy
     {
