@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
+﻿
 namespace WPFLogFilter.Tabs
 {
-    public interface ITab
-    {
-    }
+    public interface ITab { }
 }

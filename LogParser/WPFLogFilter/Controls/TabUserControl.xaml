@@ -182,10 +182,13 @@
                                                     <DataTrigger Binding="{Binding DateTime}" Value="01-01-0001 00:00:00">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
+                                                    <DataTrigger  Binding="{Binding EventId}" Value="-1">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
-
+                                        
                                         <Grid>
                                             <Image Source="/WPFLogFilter;component/Resources/warning.png" />
                                         </Grid>

@@ -16,7 +16,6 @@ namespace WPFLogFilter.Filter
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => x.LogLevel.Trim().Contains(search)));
             }
-
             return list;
         }
     }

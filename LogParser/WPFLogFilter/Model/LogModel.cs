@@ -29,6 +29,5 @@ namespace WPFLogFilter.Model
         public string LogLevel { get => _logLevel; set => _logLevel = value; }
         public int EventId { get => _eventId; set => _eventId = value; }
         public string Text { get => _text; set => _text = value; }
-
     }
 }

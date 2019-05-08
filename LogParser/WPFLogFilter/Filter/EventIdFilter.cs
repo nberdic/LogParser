@@ -14,7 +14,7 @@ namespace WPFLogFilter.Filter
         {
             if (!search.Equals(string.Empty))
             {
-                list = new ObservableCollection<LogModel>(list.Where(x => x.EventId.ToString().Contains(search)));
+                list = new ObservableCollection<LogModel>(list.Where(x => x.EventId.ToString().Contains(search) && x.EventId !=-1));
             }
             return list;
         }

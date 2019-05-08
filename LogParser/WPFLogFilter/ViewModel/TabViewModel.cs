@@ -15,10 +15,7 @@ namespace WPFLogFilter.ViewModel
     {
         private ObservableCollection<LogModel> _listLoadLine;
         private ObservableCollection<LogModel> _backupList;
-
-
         private ObservableCollection<ObservableCollection<LogModel>> _listFilters;
-
         private ObservableCollection<LogModel> _dateTimeList;
         private ObservableCollection<LogModel> _threadIdList;
         private ObservableCollection<LogModel> _logLevelList;

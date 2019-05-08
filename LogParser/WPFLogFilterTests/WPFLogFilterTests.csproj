@@ -81,6 +81,10 @@
     <Compile Include="ParsingStrategies\MockParsingStrategyIsNull.cs" />
     <Compile Include="ParsingStrategies\MockParsingStrategy.cs" />
     <Compile Include="ParsingTests\ParseFactoryTests\ParseFactoryTest.cs" />
+    <Compile Include="ParsingTests\ParseStrategyTests\StringOnlyParsingStrategyTest.cs" />
+    <Compile Include="ParsingTests\ParseStrategyTests\NoThreadIdParsingStrategyTest.cs" />
+    <Compile Include="ParsingTests\ParseStrategyTests\NoEventIdParsingStrategyTest.cs" />
+    <Compile Include="ParsingTests\ParseStrategyTests\FullParsingStrategyTest.cs" />
     <Compile Include="ViewModelTests\MainViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -94,9 +98,7 @@
       <Name>WPFLogFilter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ParsingTests\ParseStrategyTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

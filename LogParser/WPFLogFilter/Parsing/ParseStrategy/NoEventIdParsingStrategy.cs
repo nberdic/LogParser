@@ -14,6 +14,7 @@ namespace WPFLogFilter.Parsing.ParseStrategy
         public List<LogModel> Parse(string[] lines)
         {
             List<LogModel> tempList = new List<LogModel>();
+            DateTime dateTime;
             
             for (int x = 0; x < lines.Length; x++)
             {
@@ -21,7 +22,12 @@ namespace WPFLogFilter.Parsing.ParseStrategy
                 if ((lines[x] != "") && (arrayOfParts.Count() == 5))
                 {
                     int id = x + 1;
-                    DateTime dateTime = DateTime.Parse(arrayOfParts[0] + " " + arrayOfParts[1]);
+
+                    if (!DateTime.TryParse(arrayOfParts[0] + " " + arrayOfParts[1], out dateTime))
+                    {
+                        dateTime = DateTime.MinValue;
+                    }
+
                     string threadId = arrayOfParts[2];
                     string logLevel = arrayOfParts[3];
                     int eventId = -1;
@@ -29,12 +35,10 @@ namespace WPFLogFilter.Parsing.ParseStrategy
 
                     tempList.Add(new LogModel(id, dateTime, threadId, logLevel, eventId, text));
                 }
-
                 else
                 {
                     tempList.Add(new LogModel(x + 1, DateTime.MinValue, "", "", -1, lines[x]));
                 }
-
             }
             return tempList;
         }

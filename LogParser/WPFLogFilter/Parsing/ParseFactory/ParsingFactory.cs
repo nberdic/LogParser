@@ -25,7 +25,6 @@ namespace WPFLogFilter.Parsing.ParsingFactory
                         counterFull++;
                         break;
                     case 5:
-
                         if (lineParse[2].Length != 10)
                         {
                             counterNoThread++;

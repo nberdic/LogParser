@@ -14,8 +14,6 @@ namespace WPFLogFilter.ViewModel
             return new BindingProxy();
         }
 
-
-
         public object Data
         {
             get { return (object)GetValue(DataProperty); }

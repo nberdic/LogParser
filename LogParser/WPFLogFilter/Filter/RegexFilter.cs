@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WPFLogFilter.Model;
 
 namespace WPFLogFilter.Filter
@@ -43,10 +40,7 @@ namespace WPFLogFilter.Filter
 
             }
             return list;
-
         }
-
-
 
         private static bool IsRegexValid(string pattern)
         {
@@ -78,7 +72,6 @@ namespace WPFLogFilter.Filter
                     {
                         return false;
                     }
-
                 }
 
                 if ((pattern.Equals(pattern.Trim())) && (pattern.StartsWith(".")))
@@ -91,7 +84,6 @@ namespace WPFLogFilter.Filter
                 {
                     return false;
                 }
-
             }
             else
             {
@@ -100,7 +92,6 @@ namespace WPFLogFilter.Filter
             }
 
             return true;
-
         }
 
     }

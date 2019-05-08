@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WPFLogFilter.Model;
 
 namespace WPFLogFilter.Parsing.ParseStrategy
@@ -14,6 +10,7 @@ namespace WPFLogFilter.Parsing.ParseStrategy
         public List<LogModel> Parse(string[] lines)
         {
             List<LogModel> tempList = new List<LogModel>();
+            DateTime dateTime;
 
             for (int x = 0; x < lines.Length; x++)
             {
@@ -22,7 +19,10 @@ namespace WPFLogFilter.Parsing.ParseStrategy
                 {
                     int id = x + 1;
                     int eventId;
-                    DateTime dateTime = DateTime.Parse(arrayOfParts[0] + " " + arrayOfParts[1]);
+                    if (!DateTime.TryParse(arrayOfParts[0] + " " + arrayOfParts[1], out dateTime))
+                    {
+                        dateTime = DateTime.MinValue;
+                    }
 
                     string threadId = "";
                     string logLevel = arrayOfParts[2];
