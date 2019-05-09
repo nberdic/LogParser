@@ -12,10 +12,12 @@ namespace WPFLogFilter.Filter
         {
             int notCaseSensitive = 0;
 
-            if (searchText.Equals(string.Empty))
+            if (string.IsNullOrWhiteSpace(searchText))
             {
                 return list;
             }
+
+           // searchText = searchText.Trim();
 
             if (searchText[searchText.Length - 1].Equals('¢'))
             {
@@ -37,7 +39,6 @@ namespace WPFLogFilter.Filter
                 {
                     list = new ObservableCollection<LogModel>(list.Where(x => x.Text.ToLower().Contains(searchText.ToLower())));
                 }
-
             }
             return list;
         }
@@ -90,7 +91,6 @@ namespace WPFLogFilter.Filter
                 //BAD PATTERN: Pattern is null or blank
                 return false;
             }
-
             return true;
         }
 

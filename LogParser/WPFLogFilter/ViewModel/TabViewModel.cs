@@ -284,11 +284,11 @@ namespace WPFLogFilter.ViewModel
             filterFactory = _filterfactory.Create(2);
             if (_noDateCheckBox)
             {
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2 + "¢"), 2);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2 + "¢"), 2);
             }
             else
             {
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "+" + DateTimeSearch2), 2);
+                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2), 2);
             }
 
             filterFactory = _filterfactory.Create(3);

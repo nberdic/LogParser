@@ -14,7 +14,7 @@ namespace WPFLogFilter.Filter
         {
             if ((list != null) && (!search.Equals("ALL")))
             {
-                list = new ObservableCollection<LogModel>(list.Where(x => x.LogLevel.Trim().Contains(search)));
+                list = new ObservableCollection<LogModel>(list.Where(x => x.LogLevel.Trim().Contains(search.Trim())));
             }
             return list;
         }

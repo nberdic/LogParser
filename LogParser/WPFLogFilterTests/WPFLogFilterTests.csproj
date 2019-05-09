@@ -77,6 +77,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FilterTests\RegexFilterTests.cs" />
+    <Compile Include="FilterTests\EventIdlFilterTests.cs" />
+    <Compile Include="FilterTests\LogLevelFilterTests.cs" />
+    <Compile Include="FilterTests\ThreadIdFilterTests.cs" />
+    <Compile Include="FilterTests\DateTimeFilterTests.cs" />
     <Compile Include="ParsingStrategies\MockParsingStrategyEmpty.cs" />
     <Compile Include="ParsingStrategies\MockParsingStrategyIsNull.cs" />
     <Compile Include="ParsingStrategies\MockParsingStrategy.cs" />

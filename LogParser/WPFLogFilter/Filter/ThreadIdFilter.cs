@@ -12,9 +12,9 @@ namespace WPFLogFilter.Filter
     {
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search)
         {
-            if (!search.Equals(string.Empty))
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                list = new ObservableCollection<LogModel>(list.Where(x => x.ThreadId.Contains(search)));
+                list = new ObservableCollection<LogModel>(list.Where(x => x.ThreadId.Contains(search.Trim())));
             }
             return list;
         }
