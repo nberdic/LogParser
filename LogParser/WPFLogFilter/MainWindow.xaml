@@ -6,7 +6,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:controls="clr-namespace:WPFLogFilter.Controls"
-        
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -22,7 +21,6 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
     </Window.Resources>
 
     <i:Interaction.Triggers>

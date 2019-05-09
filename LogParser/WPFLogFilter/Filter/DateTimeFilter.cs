@@ -9,22 +9,53 @@ namespace WPFLogFilter.Filter
     {
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search)
         {
-            if (!string.IsNullOrWhiteSpace(search))
+            search = search.Trim();
+
+            if (string.IsNullOrWhiteSpace(search))
             {
-                search = search.Trim();
-
-                if ((search.Length == 17) || (search.Length == 18 && search.EndsWith("¢")))
+                return list;
+            }
+                if ((search.Equals("¢") || (search.Equals("¥"))))
                 {
-                    int noDateSensitive = 0;
-                    string[] times = search.Split('¥');
+                    return list;
+                }
+                
+                int noDateSensitive = 0;
+                string[] times = search.Split('¥');
 
-                    if (times[1].EndsWith("¢"))
+                if (times[1].EndsWith("¢"))
+                {
+                    noDateSensitive = 1;
+                    times[1] = times[1].Remove(times[1].Length - 1);
+                    search = search.Remove(search.Length - 1);
+                }
+
+                if (!times[0].Equals("00:00:00"))
+                {
+                    if (!DateTime.TryParse(times[0], out DateTime temp1))
                     {
-                        noDateSensitive = 1;
-                        times[1] = times[1].Remove(times[1].Length - 1);
-                        search = search.Remove(search.Length - 1);
+                        return list;
                     }
+                    else
+                    {
+                        times[0] = temp1.ToString("HH:mm:ss");
+                    }
+                }
 
+                if (!times[1].Equals("23:59:59"))
+                {
+                    if (!DateTime.TryParse(times[1], out DateTime temp2))
+                    {
+                        return list;
+                    }
+                    else
+                    {
+                        times[1] = temp2.ToString("HH:mm:ss");
+                    }
+                }
+
+                if ((times[0].Length == 8) || (times[1].Length == 8))
+                {
                     DateTime date = DateTime.MinValue;
 
                     foreach (var item in list)
@@ -68,10 +99,5 @@ namespace WPFLogFilter.Filter
                     return list;
                 }
             }
-            else
-            {
-                return list;
-            }
-        }
     }
 }
