@@ -13,9 +13,8 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz" AllowDrop="True"
-        mc:Ignorable="d" Height="Auto" Width="Auto" MinHeight="700" MinWidth="1220"
+        mc:Ignorable="d" Height="{Binding WindowHeight,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Width="Auto" MinWidth="1220"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
 
@@ -28,8 +27,11 @@
             <cmd:EventToCommand Command="{Binding Mode=OneWay, Path=DropInFileCommand}"
                         PassEventArgsToCommand="True" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="SizeChanged">
+            <cmd:EventToCommand Command="{Binding ChangeSizeWindowCommand}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
-    <!--Background="{DynamicResource PrimaryHueLightBrush}"-->
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

@@ -1,5 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,6 +32,7 @@ namespace WPFLogFilter.ViewModel
         private string _tabFileName;
         private int _tabSelectIndex;
         private bool _tabVisibility = false;
+        private double _windowHeight = 700;
 
         public MainViewModel(IDialogWrapper dialogWrapper, IAssemblyWrapper assemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory)
         {
@@ -49,6 +51,7 @@ namespace WPFLogFilter.ViewModel
             ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
             ExitCommand = new RelayCommand(ExitApplication);
             DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
+            ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
         }
 
         public RelayCommand ClickMenuCommand { get; set; }
@@ -56,6 +59,8 @@ namespace WPFLogFilter.ViewModel
         public RelayCommand<ITab> CloseTabCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
         public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
+
+        public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
 
         public ObservableCollection<ITab> Tabs { get; set; }
 
@@ -95,6 +100,16 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        public double WindowHeight
+        {
+            get => _windowHeight;
+            set
+            {
+                Set(ref _windowHeight, value);
+                Messenger.Default.Send(_windowHeight);
+            }
+        }
+
         private void SelectLogFile()
         {
             PopulateList(_dialogWrapper.GetLines());
@@ -102,7 +117,7 @@ namespace WPFLogFilter.ViewModel
 
         private void PopulateList(List<FileModel> listFileInfo)
         {
-            if (listFileInfo !=null)
+            if (listFileInfo != null)
             {
                 foreach (FileModel file in listFileInfo)
                 {
@@ -113,7 +128,10 @@ namespace WPFLogFilter.ViewModel
                         return;
                     }
                     _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(file.FileData));
-                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, file.FilePath));
+                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, file.FilePath)
+                    {
+                        ScrollViewHeight = WindowHeight
+                    });
                     GetTabIndex();
                 }
             }
@@ -170,6 +188,11 @@ namespace WPFLogFilter.ViewModel
                 }
             }
             PopulateList(tempList);
+        }
+
+        private void ChangeSizeWindow(EventArgs e)
+        {
+            WindowHeight = ((SizeChangedEventArgs)e).NewSize.Height;
         }
     }
 }

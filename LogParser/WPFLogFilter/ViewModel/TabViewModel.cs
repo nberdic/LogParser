@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,6 +47,7 @@ namespace WPFLogFilter.ViewModel
         private string _threadIdSearch = "";
         private string _eventIdSearch = "";
         private string _logTextSearch = "";
+        private double _scrollViewHeight = 700;
 
         public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory, string logFilePath)
         {
@@ -63,6 +65,8 @@ namespace WPFLogFilter.ViewModel
             _regexList = new ObservableCollection<LogModel>();
             ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
+
+            Messenger.Default.Register<double>(this, UpdateScrollViewSize);
 
             ExtractFileName();
         }
@@ -249,6 +253,18 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        public double ScrollViewHeight
+        {
+            get
+            {
+                return _scrollViewHeight - 165;
+            }
+            set
+            {
+                Set(ref _scrollViewHeight, value);
+            }
+        }
+
         private void ToggleColumnVisibility()
         {
             IdIsValid = true;
@@ -369,6 +385,11 @@ namespace WPFLogFilter.ViewModel
                 string[] results = _logFilePath.Split(new char[] { '\\', '\\' }, StringSplitOptions.RemoveEmptyEntries);
                 TabFileName = results[results.Length - 1];
             }
+        }
+
+        private void UpdateScrollViewSize(double windowSize)
+        {
+            ScrollViewHeight = windowSize;
         }
     }
 }
