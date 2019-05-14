@@ -3349,15 +3349,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LogParser"
-        "ProductCode" = "8:{18A485EA-DFE7-4CF5-B924-A6A7090E43C4}"
-        "PackageCode" = "8:{E1B2623B-0FD7-461C-8939-C63171FD67A7}"
+        "ProductCode" = "8:{ABF3B044-B1DF-4764-B53B-1B0137901F2F}"
+        "PackageCode" = "8:{6A824C92-FCD3-4B8C-BBB0-869DBDFCFADD}"
         "UpgradeCode" = "8:{BCA4B748-4E05-4CC6-B888-34717E7F52F4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.3"
+        "ProductVersion" = "8:1.3.0"
         "Manufacturer" = "8:Execom"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3899,7 +3899,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4E21162121A448D180276A501D0559D4"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\WPFLogFilter\\obj\\Release\\WPFLogFilter.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E773907E033844E98476AF192168CE8B"
