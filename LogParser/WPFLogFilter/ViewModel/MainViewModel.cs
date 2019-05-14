@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +28,7 @@ namespace WPFLogFilter.ViewModel
         private IParsingFactory _parsingFactory;
         private IParsingStrategy _parsingStrategy;
         private IFilterFactory _filterFactory;
+        private ILog _iLog;
 
         private string _titleVersion;
         private string _tabFileName;
@@ -34,18 +36,19 @@ namespace WPFLogFilter.ViewModel
         private bool _tabVisibility = false;
         private double _windowHeight = 700;
 
-        public MainViewModel(IDialogWrapper dialogWrapper, IAssemblyWrapper assemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory)
+        public MainViewModel(IDialogWrapper dialogWrapper, IAssemblyWrapper assemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory, ILog iLog)
         {
             _dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
             _assemblyWrapper = assemblyWrapper ?? throw new ArgumentNullException(nameof(assemblyWrapper));
             _parsingFactory = iParsingFactory ?? throw new ArgumentNullException(nameof(iParsingFactory));
             _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
+            _iLog = iLog ?? throw new ArgumentNullException(nameof(iLog));
 
             _listLoadLine = new ObservableCollection<LogModel>();
             Tabs = new ObservableCollection<ITab>();
 
             GetVersion();
-
+            
             ClickMenuCommand = new RelayCommand(SelectLogFile);
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
             ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
@@ -128,7 +131,7 @@ namespace WPFLogFilter.ViewModel
                         return;
                     }
                     _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(file.FileData));
-                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, file.FilePath)
+                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, _iLog, file.FilePath)
                     {
                         ScrollViewHeight = WindowHeight
                     });
@@ -172,6 +175,7 @@ namespace WPFLogFilter.ViewModel
         private void ExitApplication()
         {
             Application.Current.Shutdown();
+            _iLog.Info("User has exited the application");
         }
 
         private void OpenDroppedFiles(DragEventArgs e)

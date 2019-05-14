@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using WPFLogFilter.AsmblyWrapper;
@@ -23,6 +24,7 @@ namespace WPFLogFilterTests.ViewModelTests
         Mock<IParsingFactory> iParsingFactory;
         Mock<IFilterFactory> iFilterFactory;
         Mock<IParsingStrategy> iParsingStrategy;
+        Mock<ILog> iLog;
         MainViewModel viewModel;
         Mock<ObservableCollection<LogModel>> observableCollection;
 
@@ -35,9 +37,10 @@ namespace WPFLogFilterTests.ViewModelTests
             iParsingFactory = new Mock<IParsingFactory>();
             iFilterFactory = new Mock<IFilterFactory>();
             iParsingStrategy = new Mock<IParsingStrategy>();
+            iLog = new Mock<ILog>();
             observableCollection = new Mock<ObservableCollection<LogModel>>();
 
-            viewModel = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, iParsingFactory.Object, iFilterFactory.Object);
+            viewModel = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, iParsingFactory.Object, iFilterFactory.Object, iLog.Object);
         }
 
         [TestMethod]
@@ -47,7 +50,7 @@ namespace WPFLogFilterTests.ViewModelTests
             // Arrange
 
             // Act
-            MainViewModel viewModelNoDialogWrapper = new MainViewModel(null, iAssemblyWrapper.Object, iParsingFactory.Object, iFilterFactory.Object);
+            MainViewModel viewModelNoDialogWrapper = new MainViewModel(null, iAssemblyWrapper.Object, iParsingFactory.Object, iFilterFactory.Object, iLog.Object);
 
             // Assert
         }
@@ -59,7 +62,7 @@ namespace WPFLogFilterTests.ViewModelTests
             // Arrange
 
             // Act
-            MainViewModel viewModelNoAssemblyWrapper = new MainViewModel(iDialogWrapper.Object, null, iParsingFactory.Object, iFilterFactory.Object);
+            MainViewModel viewModelNoAssemblyWrapper = new MainViewModel(iDialogWrapper.Object, null, iParsingFactory.Object, iFilterFactory.Object, iLog.Object);
 
             //Assert
         }
@@ -73,7 +76,7 @@ namespace WPFLogFilterTests.ViewModelTests
 
 
             // Act 
-            MainViewModel viewModelNoParsingStrategy = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, null, iFilterFactory.Object);
+            MainViewModel viewModelNoParsingStrategy = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, null, iFilterFactory.Object, iLog.Object);
 
             // Assert
 
@@ -87,7 +90,7 @@ namespace WPFLogFilterTests.ViewModelTests
 
 
             // Act 
-            MainViewModel viewModelNoFilterFactory = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, iParsingFactory.Object, null);
+            MainViewModel viewModelNoFilterFactory = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, iParsingFactory.Object, null, iLog.Object);
 
             //Assert
 
@@ -194,7 +197,7 @@ namespace WPFLogFilterTests.ViewModelTests
         {
             //Arrange
             observableCollection = new Mock<ObservableCollection<LogModel>>();
-            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, It.IsAny<string>());
+            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
             viewModel.Tabs.Add(tab);
 
             //Act
@@ -208,7 +211,7 @@ namespace WPFLogFilterTests.ViewModelTests
         public void CloseTabCommand_TabUsedForRemoveIsNull_ListCountIs1()
         {
             //Arrange
-            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, It.IsAny<string>());
+            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
             TabViewModel tabSentAsArgument = null;
             viewModel.Tabs.Add(tab);
 

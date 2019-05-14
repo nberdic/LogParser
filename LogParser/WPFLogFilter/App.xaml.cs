@@ -1,14 +1,6 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Views;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CommonServiceLocator;
+using log4net;
 using System.Windows;
-using WPFLogFilter.DialogWrapperFolder;
-using WPFLogFilter.ViewModel;
 
 namespace WPFLogFilter
 {
@@ -17,6 +9,17 @@ namespace WPFLogFilter
     /// </summary>
     public partial class App : Application
     {
-        
+        public App()
+        {
+            DispatcherUnhandledException += OnDispatcherUnhandledException;
+        }
+
+        private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var logger = ServiceLocator.Current.GetInstance<ILog>();
+            string errorMessage = string.Format("An unhandled exception occurred: {0}", e.Exception);
+            logger.Error(errorMessage);
+            e.Handled = true;
+        }
     }
 }

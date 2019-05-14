@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
@@ -25,6 +27,7 @@ namespace WPFLogFilter.ViewModel
 
         private IFilterFactory _filterfactory;
         private IParsingStrategy _parsingStrategy;
+        private ILog _iLog;
 
         private IList<LogLevelEnum> _logLvlComboEnumList;
         private LogLevelEnum _logLevelValues;
@@ -49,12 +52,13 @@ namespace WPFLogFilter.ViewModel
         private string _logTextSearch = "";
         private double _scrollViewHeight = 700;
 
-        public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory, string logFilePath)
+        public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory,ILog log, string logFilePath)
         {
             _filterfactory = filterFactory;
             _parsingStrategy = strategy;
             ListLoadLine = list;
             _backupList = list;
+            _iLog = log;
             _logFilePath = logFilePath;
 
             _eventIdList = new ObservableCollection<LogModel>();
@@ -69,7 +73,11 @@ namespace WPFLogFilter.ViewModel
             Messenger.Default.Register<double>(this, UpdateScrollViewSize);
 
             ExtractFileName();
+
+            GetLogInfo();
         }
+
+        
 
         public ObservableCollection<LogModel> ListLoadLine
         {
@@ -390,6 +398,12 @@ namespace WPFLogFilter.ViewModel
         private void UpdateScrollViewSize(double windowSize)
         {
             ScrollViewHeight = windowSize;
+        }
+
+        private void GetLogInfo()
+        {
+            _iLog.Info("Loaded file: " + TabFileName);
+            _iLog.Info(TabFileName+ " has " + ListLoadLine.Count + " lines");
         }
     }
 }

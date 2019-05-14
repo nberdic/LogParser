@@ -13,9 +13,10 @@
 */
 
 using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Views;
+using log4net;
+using System;
+using System.IO;
 using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
@@ -38,13 +39,18 @@ namespace WPFLogFilter.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
+            var logger = LogManager.GetLogger(string.Empty);
+            ConfigureLog();
+
             SimpleIoc.Default.Register<IDialogWrapper, DialogWrapper>();
             SimpleIoc.Default.Register<IAssemblyWrapper, AssemblyWrapper>();
             SimpleIoc.Default.Register<IParsingFactory, ParsingFactory>();
             SimpleIoc.Default.Register<IFilterFactory, FilterFactory>();
-            
+            SimpleIoc.Default.Register(new Func<ILog>(() => logger));
+
             SimpleIoc.Default.Register<TabViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
+            logger.Info("Program started");
         }
 
         public MainViewModel Main
@@ -57,7 +63,6 @@ namespace WPFLogFilter.ViewModel
                 }
                 catch (System.Exception)
                 {
-
                     throw;
                 }
             }
@@ -66,6 +71,14 @@ namespace WPFLogFilter.ViewModel
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
+        }
+
+        private void ConfigureLog()
+        {
+            FileInfo fi = new FileInfo("App.config");
+            log4net.Config.XmlConfigurator.Configure(fi);
+            GlobalContext.Properties["host"] = Environment.MachineName;
+            GlobalContext.Properties["user"] = Environment.UserName;
         }
     }
 }

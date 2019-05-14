@@ -1,26 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFLogFilter", "WPFLogFilter\WPFLogFilter.csproj", "{8DE29D18-E198-4FDB-9791-F6040ED70DAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFLogFilterTests", "WPFLogFilterTests\WPFLogFilterTests.csproj", "{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup for WPFLogFilterInstallation", "Setup for WPFLogFilterInstallation\Setup for WPFLogFilterInstallation.vdproj", "{FC296509-B6FD-46E2-8700-39F8C7AFFA47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Debug|x86.Build.0 = Debug|Any CPU
 		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Release|x86.ActiveCfg = Release|Any CPU
+		{8DE29D18-E198-4FDB-9791-F6040ED70DAB}.Release|x86.Build.0 = Release|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Debug|x86.Build.0 = Debug|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|x86.Build.0 = Release|Any CPU
+		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Debug|Any CPU.ActiveCfg = Debug
+		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Debug|x86.ActiveCfg = Debug
+		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Release|Any CPU.ActiveCfg = Release
+		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
