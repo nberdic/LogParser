@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFLogFilter", "WPFLogFilte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFLogFilterTests", "WPFLogFilterTests\WPFLogFilterTests.csproj", "{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup for WPFLogFilterInstallation", "Setup for WPFLogFilterInstallation\Setup for WPFLogFilterInstallation.vdproj", "{FC296509-B6FD-46E2-8700-39F8C7AFFA47}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WPFLogFilter.Installer", "WPFLogFilter.Installer\WPFLogFilter.Installer.vdproj", "{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,11 @@ Global
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|x86.ActiveCfg = Release|Any CPU
 		{2D838A59-D2AF-4C7C-9010-3DB3419A5B36}.Release|x86.Build.0 = Release|Any CPU
-		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Debug|Any CPU.ActiveCfg = Debug
-		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Debug|x86.ActiveCfg = Debug
-		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Release|Any CPU.ActiveCfg = Release
-		{FC296509-B6FD-46E2-8700-39F8C7AFFA47}.Release|x86.ActiveCfg = Release
+		{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}.Debug|Any CPU.ActiveCfg = Debug
+		{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}.Debug|x86.ActiveCfg = Debug
+		{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}.Release|Any CPU.ActiveCfg = Release
+		{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}.Release|Any CPU.Build.0 = Release
+		{042BAFB6-5D1E-4C91-8204-7F79FFCA9294}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
