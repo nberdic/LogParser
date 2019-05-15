@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define WPFLogFilter_TargetDir=$(var.WPFLogFilter.TargetDir)?>
+  <Product Id="*" Name="LogParser" Language="1033" Version="1.3.0.0" Manufacturer="Execom" UpgradeCode="4a036ebd-11ff-4be1-846a-1a6ebc199ff5">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes"/>
+
+    <Feature Id="ProductFeature" Title="LogParser" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="LogParser" />
+      </Directory>
+      
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="DesktopFolder">
+   <Component Id="ApplicationShortcutDesktop" Guid="cde1e030-eb64-49a5-b7b8-400b379c2d1a">
+     <Shortcut Id="ApplicationDesktopShortcut" Name="LogParser" Description="MyWpfApplication" Target="[INSTALLFOLDER]WPFLogFilter.exe" WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+  </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="log4net.xml" Guid="e1d5607f-2da8-4aff-93e6-b30a06532aa8">
+        <File Id="log4net.xml" Name="log4net.xml" Source="$(var.WPFLogFilter_TargetDir)log4net.xml" />
+      </Component>
+      <Component Id="WPFLogFilter.exe" Guid="ed0cebfd-a516-4c4f-bf29-fa323aa59a0f">
+        <File Id="WPFLogFilter.exe" Name="WPFLogFilter.exe" Source="$(var.WPFLogFilter_TargetDir)WPFLogFilter.exe" />
+      </Component>
+      <Component Id="WPFLogFilter.exe.config" Guid="2d67dbb0-9ab5-47de-b92d-a43e440fa551">
+        <File Id="WPFLogFilter.exe.config" Name="WPFLogFilter.exe.config" Source="$(var.WPFLogFilter_TargetDir)WPFLogFilter.exe.config" />
+      </Component>
+      <Component Id="MaterialDesignThemes.Wpf.dll" Guid="033a6249-5c8e-4228-8446-a5b585861859">
+        <File Id="MaterialDesignThemes.Wpf.dll" Name="MaterialDesignThemes.Wpf.dll" Source="$(var.WPFLogFilter_TargetDir)MaterialDesignThemes.Wpf.dll" />
+      </Component>
+      <Component Id="GalaSoft.MvvmLight.Platform.dll" Guid="be7070ae-ef5a-48e0-9b37-31282c2f3d99">
+        <File Id="GalaSoft.MvvmLight.Platform.dll" Name="GalaSoft.MvvmLight.Platform.dll" Source="$(var.WPFLogFilter_TargetDir)GalaSoft.MvvmLight.Platform.dll" />
+      </Component>
+      <Component Id="Dragablz.dll" Guid="184e108e-f2e5-4e1e-a83d-39e191d06b06">
+        <File Id="Dragablz.dll" Name="Dragablz.dll" Source="$(var.WPFLogFilter_TargetDir)Dragablz.dll" />
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Guid="46de5044-b7a1-49a0-b141-d89029921baa">
+        <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.WPFLogFilter_TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+      <Component Id="log4net.dll" Guid="794bd762-a41a-4026-a7a6-4082223ebad1">
+        <File Id="log4net.dll" Name="log4net.dll" Source="$(var.WPFLogFilter_TargetDir)log4net.dll" />
+      </Component>
+      <Component Id="GalaSoft.MvvmLight.dll" Guid="cf25d88a-525f-4ca0-a6ab-ff3401ae5e60">
+        <File Id="GalaSoft.MvvmLight.dll" Name="GalaSoft.MvvmLight.dll" Source="$(var.WPFLogFilter_TargetDir)GalaSoft.MvvmLight.dll" />
+      </Component>
+      <Component Id="CommonServiceLocator.dll" Guid="ab6c885d-294b-4157-b0f1-b3cbc4b7b1cc">
+        <File Id="CommonServiceLocator.dll" Name="CommonServiceLocator.dll" Source="$(var.WPFLogFilter_TargetDir)CommonServiceLocator.dll" />
+      </Component>
+      <Component Id="GalaSoft.MvvmLight.Extras.dll" Guid="c9861a39-bedf-444f-89ad-225b2a465125">
+        <File Id="GalaSoft.MvvmLight.Extras.dll" Name="GalaSoft.MvvmLight.Extras.dll" Source="$(var.WPFLogFilter_TargetDir)GalaSoft.MvvmLight.Extras.dll" />
+      </Component>
+      <Component Id="MaterialDesignColors.dll" Guid="3b3f90d6-9959-431a-b3e1-9089ccdaa2f0">
+        <File Id="MaterialDesignColors.dll" Name="MaterialDesignColors.dll" Source="$(var.WPFLogFilter_TargetDir)MaterialDesignColors.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
