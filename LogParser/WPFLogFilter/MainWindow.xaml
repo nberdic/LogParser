@@ -14,7 +14,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz" AllowDrop="True"
-        mc:Ignorable="d" Height="{Binding WindowHeight,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Width="Auto" MinWidth="1220"
+        mc:Ignorable="d" Height="{Binding WindowHeight,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Width="Auto" MinWidth="1220" MinHeight="500"
         DataContext="{Binding Main,Source={StaticResource Locator}}" WindowStartupLocation="CenterScreen"
         Title="{Binding TitleVersion}">
 

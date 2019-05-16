@@ -48,7 +48,7 @@ namespace WPFLogFilter.ViewModel
             Tabs = new ObservableCollection<ITab>();
 
             GetVersion();
-            
+
             ClickMenuCommand = new RelayCommand(SelectLogFile);
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
             ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
@@ -61,8 +61,8 @@ namespace WPFLogFilter.ViewModel
         public RelayCommand ClickOpenNotepadCommand { get; set; }
         public RelayCommand<ITab> CloseTabCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
-        public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
 
+        public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
         public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
 
         public ObservableCollection<ITab> Tabs { get; set; }
@@ -165,10 +165,14 @@ namespace WPFLogFilter.ViewModel
 
         private void CloseTab(ITab selectedTab)
         {
-            Tabs.Remove(selectedTab);
-            if (Tabs.Count == 0)
+            if (selectedTab!=null)
             {
-                TabVisibility = false;
+                Tabs.Remove(selectedTab);
+                _iLog.Info("File closed: " + ((TabViewModel)selectedTab).TabFileName);
+                if (Tabs.Count == 0)
+                {
+                    TabVisibility = false;
+                }
             }
         }
 

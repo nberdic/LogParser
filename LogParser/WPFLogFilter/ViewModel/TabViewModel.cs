@@ -38,6 +38,7 @@ namespace WPFLogFilter.ViewModel
         private bool _logLevelIsValid = false;
         private bool _eventIdIsValid = false;
         private bool _textIsValid = false;
+        private bool _noDateCheckBoxIsValid = false;
         private bool _caseSensitiveCheckBox = true;
         private bool _noDateCheckBox = true;
         private bool _openFileIsValid = false;
@@ -75,9 +76,9 @@ namespace WPFLogFilter.ViewModel
             ExtractFileName();
 
             GetLogInfo();
-        }
 
-        
+            NoDateCheckBoxIsValid = list.Any(x => x.DateTime == DateTime.MinValue);
+        }
 
         public ObservableCollection<LogModel> ListLoadLine
         {
@@ -123,6 +124,7 @@ namespace WPFLogFilter.ViewModel
                 Set(ref _idIsValid, value);
             }
         }
+
         public bool DateTimeIsValid
         {
             get => _dateTimeIsValid;
@@ -131,6 +133,7 @@ namespace WPFLogFilter.ViewModel
                 Set(ref _dateTimeIsValid, value);
             }
         }
+
         public bool ThreadIdIsValid
         {
             get => _threadIdIsValid;
@@ -139,6 +142,7 @@ namespace WPFLogFilter.ViewModel
                 Set(ref _threadIdIsValid, value);
             }
         }
+
         public bool LogLevelIsValid
         {
             get => _logLevelIsValid;
@@ -147,6 +151,7 @@ namespace WPFLogFilter.ViewModel
                 Set(ref _logLevelIsValid, value);
             }
         }
+
         public bool EventIdIsValid
         {
             get => _eventIdIsValid;
@@ -270,6 +275,15 @@ namespace WPFLogFilter.ViewModel
             set
             {
                 Set(ref _scrollViewHeight, value);
+            }
+        }
+
+        public bool NoDateCheckBoxIsValid
+        {
+            get => _noDateCheckBoxIsValid;
+            set
+            {
+                Set(ref _noDateCheckBoxIsValid, value);
             }
         }
 
@@ -405,5 +419,6 @@ namespace WPFLogFilter.ViewModel
             _iLog.Info("Loaded file: " + TabFileName);
             _iLog.Info(TabFileName+ " has " + ListLoadLine.Count + " lines");
         }
+
     }
 }
