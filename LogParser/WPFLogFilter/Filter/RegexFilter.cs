@@ -39,7 +39,6 @@ namespace WPFLogFilter.Filter
 
                 foreach (var model in list)
                 {
-
                     string[] stringSeparator = new string[] { searchText };
                     var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
 
@@ -52,13 +51,6 @@ namespace WPFLogFilter.Filter
                         sb.Append(result[x]);
                     }
                     model.LastText = sb.ToString();
-
-                    if (searchText.Equals(string.Empty))
-                    {
-                        model.FirstText = model.Text;
-                        model.HighLightedText = string.Empty;
-                        model.LastText = string.Empty;
-                    }
                 }
             }
             else
@@ -69,7 +61,6 @@ namespace WPFLogFilter.Filter
 
                     foreach (var model in list)
                     {
-
                         string[] stringSeparator = new string[] { searchText };
                         var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
 
@@ -82,13 +73,6 @@ namespace WPFLogFilter.Filter
                             sb.Append(result[x]);
                         }
                         model.LastText = sb.ToString();
-
-                        if (searchText.Equals(string.Empty))
-                        {
-                            model.FirstText = model.Text;
-                            model.HighLightedText = string.Empty;
-                            model.LastText = string.Empty;
-                        }
                     }
                 }
                 else
@@ -97,7 +81,6 @@ namespace WPFLogFilter.Filter
 
                     foreach (var model in list)
                     {
-
                         string[] stringSeparator = new string[] { searchText };
                         var result = Regex.Split(model.Text, searchText, RegexOptions.IgnoreCase);
 
@@ -110,13 +93,6 @@ namespace WPFLogFilter.Filter
                             sb.Append(result[x]);
                         }
                         model.LastText = sb.ToString();
-
-                        if (searchText.Equals(string.Empty))
-                        {
-                            model.FirstText = model.Text;
-                            model.HighLightedText = string.Empty;
-                            model.LastText = string.Empty;
-                        }
                     }
                 }
             }
