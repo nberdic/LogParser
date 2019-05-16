@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define WPFLogFilter_TargetDir=$(var.WPFLogFilter.TargetDir)?>
-  <Product Id="*" Name="LogParser" Language="1033" Version="1.3.0.0" Manufacturer="Execom" UpgradeCode="4a036ebd-11ff-4be1-846a-1a6ebc199ff5">
+  <Product Id="*" Name="LogParser" Language="1033" Version="1.3.1.0" Manufacturer="Execom" UpgradeCode="4a036ebd-11ff-4be1-846a-1a6ebc199ff5">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes"/>

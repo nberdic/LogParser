@@ -110,32 +110,6 @@
 
                     <DataGrid.Resources>
 
-                        <!--<Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="{Binding LogTextSearch}">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource SearchTermConverter}">
-                                        <Binding Path="FirstName" />
-                                        <Binding RelativeSource="{RelativeSource Self}"
-Path="{Binding LogTextSearch}" />
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="FirstName" Value="True">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-
-                                                <GradientStop Color="White" Offset="0"/>
-
-                        <GradientStop Color="#FF84FF7A" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>-->
-
                         <Style TargetType="DataGrid">
                             <Setter Property="FontWeight" Value="Normal"/>
                             <Setter Property="BorderThickness" Value="1,1,1,1"/>
@@ -206,14 +180,30 @@ Path="{Binding LogTextSearch}" />
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
+                        <DataGridTemplateColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Width="*" MinWidth="500">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontSize="1">
+                                        <Run FontSize="13" Text="{Binding FirstText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Run FontSize="13" Text="{Binding HighLightedText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Background="Yellow"/>
+                                        <Run FontSize="13" Text="{Binding LastText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock.Style>
+                                            <Style>
+                                                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                        <DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="500">
+                        <!--<DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="500">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
                                     <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                        </DataGridTextColumn>-->
 
                         <DataGridTemplateColumn Header="Warning" MinWidth="40" HeaderStyle="{StaticResource CenterGridHeaderStyle}">
                             <DataGridTemplateColumn.CellTemplate>
