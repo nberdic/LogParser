@@ -110,6 +110,32 @@
 
                     <DataGrid.Resources>
 
+                        <!--<Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="{Binding LogTextSearch}">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource SearchTermConverter}">
+                                        <Binding Path="FirstName" />
+                                        <Binding RelativeSource="{RelativeSource Self}"
+Path="{Binding LogTextSearch}" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="FirstName" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+
+                                                <GradientStop Color="White" Offset="0"/>
+
+                        <GradientStop Color="#FF84FF7A" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>-->
+
                         <Style TargetType="DataGrid">
                             <Setter Property="FontWeight" Value="Normal"/>
                             <Setter Property="BorderThickness" Value="1,1,1,1"/>
@@ -200,9 +226,17 @@
                                                     <DataTrigger Binding="{Binding DateTime}" Value="01-01-0001 00:00:00">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
-                                                    <DataTrigger  Binding="{Binding EventId}" Value="-1">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
+
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding EventId}" Value="-1"/>
+                                                            <Condition Binding="{Binding Data.EventIdIsValid,Source={StaticResource proxy}}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
