@@ -39,18 +39,15 @@ namespace WPFLogFilter.Filter
 
                 foreach (var model in list)
                 {
-                    string[] stringSeparator = new string[] { searchText };
+                    MatchCollection coll = Regex.Matches(model.Text, searchText);
+                    string[] stringSeparator = new string[] { coll[0].Value };
                     var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
 
                     model.FirstText = result[0];
-                    model.HighLightedText = searchText;
+                    model.HighLightedText = coll[0].Value;
 
-                    StringBuilder sb = new StringBuilder();
-                    for (int x = 1; x < result.Count(); x++)
-                    {
-                        sb.Append(result[x]);
-                    }
-                    model.LastText = sb.ToString();
+                    result = result.Skip(1).ToArray();
+                    model.LastText = string.Join("", result);
                 }
             }
             else
@@ -67,12 +64,8 @@ namespace WPFLogFilter.Filter
                         model.FirstText = result[0];
                         model.HighLightedText = searchText;
 
-                        StringBuilder sb = new StringBuilder();
-                        for (int x = 1; x < result.Count(); x++)
-                        {
-                            sb.Append(result[x]);
-                        }
-                        model.LastText = sb.ToString();
+                        result = result.Skip(1).ToArray();
+                        model.LastText = string.Join("", result);
                     }
                 }
                 else
@@ -85,14 +78,10 @@ namespace WPFLogFilter.Filter
                         var result = Regex.Split(model.Text, searchText, RegexOptions.IgnoreCase);
 
                         model.FirstText = result[0];
-                        model.HighLightedText = model.Text.Substring(model.FirstText.Length,searchText.Length);
+                        model.HighLightedText = model.Text.Substring(model.FirstText.Length, searchText.Length);
 
-                        StringBuilder sb = new StringBuilder();
-                        for (int x = 1; x < result.Count(); x++)
-                        {
-                            sb.Append(result[x]);
-                        }
-                        model.LastText = sb.ToString();
+                        result = result.Skip(1).ToArray();
+                        model.LastText = string.Join("", result);
                     }
                 }
             }
