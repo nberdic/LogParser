@@ -24,6 +24,7 @@ namespace WPFLogFilter.ViewModel
         private ObservableCollection<LogModel> _logLevelList;
         private ObservableCollection<LogModel> _eventIdList;
         private ObservableCollection<LogModel> _regexList;
+        private ObservableCollection<LogModel> _textList;
 
         private IFilterFactory _filterfactory;
         private IParsingStrategy _parsingStrategy;
@@ -41,6 +42,7 @@ namespace WPFLogFilter.ViewModel
         private bool _noDateCheckBoxIsValid = false;
         private bool _caseSensitiveCheckBox = true;
         private bool _noDateCheckBox = true;
+        private bool _regexSearchCheckBox = false;
         private bool _openFileIsValid = false;
 
         private string _logFilePath;
@@ -53,7 +55,7 @@ namespace WPFLogFilter.ViewModel
         private string _logTextSearch = "";
         private double _scrollViewHeight = 700;
 
-        public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory,ILog log, string logFilePath)
+        public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory, ILog log, string logFilePath)
         {
             _filterfactory = filterFactory;
             _parsingStrategy = strategy;
@@ -68,6 +70,7 @@ namespace WPFLogFilter.ViewModel
             _logLevelList = new ObservableCollection<LogModel>();
             _eventIdList = new ObservableCollection<LogModel>();
             _regexList = new ObservableCollection<LogModel>();
+            _textList = new ObservableCollection<LogModel>();
             ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
@@ -287,6 +290,16 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        public bool RegexSearchCheckBox
+        {
+            get => _regexSearchCheckBox;
+            set
+            {
+                Set(ref _regexSearchCheckBox, value);
+                OnChangeCreateFilter();
+            }
+        }
+
         private void ToggleColumnVisibility()
         {
             IdIsValid = true;
@@ -338,13 +351,21 @@ namespace WPFLogFilter.ViewModel
             filterFactory = _filterfactory.Create(5);
             ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch), 5);
 
-            filterFactory = _filterfactory.Create(6);
-            if (!_caseSensitiveCheckBox)
+            if (!_regexSearchCheckBox)
             {
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 6);
+                filterFactory = _filterfactory.Create(7);
+                if (!_caseSensitiveCheckBox)
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 7);
+                }
+                else
+                {
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 7);
+                }
             }
             else
             {
+                filterFactory = _filterfactory.Create(6);
                 ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
             }
         }
@@ -370,6 +391,14 @@ namespace WPFLogFilter.ViewModel
                     _eventIdList = list;
                     break;
                 case 6:
+                    ListFilters.Remove(_regexList);
+                    _regexList = list;
+                    ListFilters.Remove(_textList);
+                    _textList = list;
+                    break;
+                case 7:
+                    ListFilters.Remove(_textList);
+                    _textList = list;
                     ListFilters.Remove(_regexList);
                     _regexList = list;
                     break;
@@ -417,8 +446,7 @@ namespace WPFLogFilter.ViewModel
         private void GetLogInfo()
         {
             _iLog.Info("Loaded file: " + TabFileName);
-            _iLog.Info(TabFileName+ " has " + ListLoadLine.Count + " lines");
+            _iLog.Info(TabFileName + " has " + ListLoadLine.Count + " lines");
         }
-
     }
 }

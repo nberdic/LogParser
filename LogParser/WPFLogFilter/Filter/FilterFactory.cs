@@ -22,6 +22,8 @@ namespace WPFLogFilter.Filter
                     return new EventIdFilter();
                 case 6:
                     return new RegexFilter();
+                case 7:
+                    return new TextFilter();
                 default:
                     return null;
             }

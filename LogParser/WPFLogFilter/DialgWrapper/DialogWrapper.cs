@@ -19,8 +19,6 @@ namespace WPFLogFilter.DialogWrapperFolder
             {
                 foreach (string file in openFileDlg.FileNames)
                 {
-                    File.SetAttributes(file, FileAttributes.Normal);
-
                     using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         using (StreamReader logFileReader = new StreamReader(logFileStream))

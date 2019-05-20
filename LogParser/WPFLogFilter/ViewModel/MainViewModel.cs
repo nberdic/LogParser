@@ -193,8 +193,6 @@ namespace WPFLogFilter.ViewModel
 
             foreach (string file in filePathList)
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-
                 using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     using (StreamReader logFileReader = new StreamReader(logFileStream))

@@ -54,6 +54,11 @@
                 <TextBlock Text="TEXT" Margin="12,0,12,0"  TextAlignment="Center" />
                 <TextBlock Text="Case Sensitive" Margin="0,0,3,0" TextAlignment="Left" />
                 <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=CaseSensitiveCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Text="Regex search" Margin="0,0,3,0" TextAlignment="Left" />
+                <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=RegexSearchCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+
+
                 <TextBlock Text="Show no-date lines" Margin="0,0,3,0" Visibility="{Binding Path=NoDateCheckBoxIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, 
                  Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left" />
                 <CheckBox IsChecked="{Binding Path=NoDateCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=NoDateCheckBoxIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" />

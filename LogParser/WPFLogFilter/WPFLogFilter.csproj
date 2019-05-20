@@ -102,6 +102,7 @@
     <Compile Include="Filter\IFilterFactory.cs" />
     <Compile Include="Filter\LogLevelFilter.cs" />
     <Compile Include="Filter\RegexFilter.cs" />
+    <Compile Include="Filter\TextFilter.cs" />
     <Compile Include="Filter\ThreadIdFilter.cs" />
     <Compile Include="AsmblyWrapper\IAssemblyWrapper.cs" />
     <Compile Include="Model\FileModel.cs" />

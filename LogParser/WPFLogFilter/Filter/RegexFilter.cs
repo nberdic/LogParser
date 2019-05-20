@@ -11,8 +11,6 @@ namespace WPFLogFilter.Filter
     {
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string searchText)
         {
-            int notCaseSensitive = 0;
-
             if (string.IsNullOrWhiteSpace(searchText))
             {
                 foreach (var model in list)
@@ -21,123 +19,32 @@ namespace WPFLogFilter.Filter
                     model.HighLightedText = string.Empty;
                     model.LastText = string.Empty;
                 }
-
                 return list;
             }
 
-            // searchText = searchText.Trim();
-
-            if (searchText[searchText.Length - 1].Equals('¢'))
-            {
-                searchText = searchText.Remove(searchText.Length - 1);
-                notCaseSensitive = 1;
-            }
-
-            if (IsRegexValid(searchText))
+            try
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => Regex.Match(x.Text, searchText).Success));
-
-                foreach (var model in list)
-                {
-                    MatchCollection coll = Regex.Matches(model.Text, searchText);
-                    string[] stringSeparator = new string[] { coll[0].Value };
-                    var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
-
-                    model.FirstText = result[0];
-                    model.HighLightedText = coll[0].Value;
-
-                    result = result.Skip(1).ToArray();
-                    model.LastText = string.Join("", result);
-                }
             }
-            else
+            catch (Exception)
             {
-                if (notCaseSensitive == 0)
-                {
-                    list = new ObservableCollection<LogModel>(list.Where(x => x.Text.Contains(searchText)));
+                return list;
+            }
 
-                    foreach (var model in list)
-                    {
-                        string[] stringSeparator = new string[] { searchText };
-                        var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
+            //highlight the result and not the regex search string
+            foreach (var model in list)
+            {
+                MatchCollection coll = Regex.Matches(model.Text, searchText);
+                string[] stringSeparator = new string[] { coll[0].Value };
+                var result = model.Text.Split(stringSeparator, StringSplitOptions.None);
 
-                        model.FirstText = result[0];
-                        model.HighLightedText = searchText;
+                model.FirstText = result[0];
+                model.HighLightedText = coll[0].Value;
 
-                        result = result.Skip(1).ToArray();
-                        model.LastText = string.Join("", result);
-                    }
-                }
-                else
-                {
-                    list = new ObservableCollection<LogModel>(list.Where(x => x.Text.ToLower().Contains(searchText.ToLower())));
-
-                    foreach (var model in list)
-                    {
-                        string[] stringSeparator = new string[] { searchText };
-                        var result = Regex.Split(model.Text, searchText, RegexOptions.IgnoreCase);
-
-                        model.FirstText = result[0];
-                        model.HighLightedText = model.Text.Substring(model.FirstText.Length, searchText.Length);
-
-                        result = result.Skip(1).ToArray();
-                        model.LastText = string.Join("", result);
-                    }
-                }
+                result = result.Skip(1).ToArray();
+                model.LastText = string.Join("", result);
             }
             return list;
         }
-
-        private static bool IsRegexValid(string pattern)
-        {
-            if ((pattern != null) && (pattern.Trim().Length > 0))
-            {
-                try
-                {
-                    Regex.Match("", pattern);
-                }
-                catch (ArgumentException)
-                {
-                    // BAD PATTERN: Syntax error
-                    return false;
-                }
-
-                if (pattern.All(ch => Char.IsLetterOrDigit(ch)))
-                {
-                    return false;
-                }
-
-                if (((!Char.IsLetterOrDigit(pattern[0])) && (!Char.IsLetterOrDigit(pattern[pattern.Length - 1]))))
-
-                {
-                    if (pattern.Any(ch => Char.IsLetterOrDigit(ch)))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                if ((pattern.Equals(pattern.Trim())) && (pattern.StartsWith(".")))
-
-                {
-                    return false;
-                }
-
-                if (pattern.StartsWith(".") || pattern.EndsWith("."))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                //BAD PATTERN: Pattern is null or blank
-                return false;
-            }
-            return true;
-        }
-
     }
 }
