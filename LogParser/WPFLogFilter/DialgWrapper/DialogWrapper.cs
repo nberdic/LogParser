@@ -19,9 +19,23 @@ namespace WPFLogFilter.DialogWrapperFolder
             {
                 foreach (string file in openFileDlg.FileNames)
                 {
-                    tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
+                    File.SetAttributes(file, FileAttributes.Normal);
+
+                    using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader logFileReader = new StreamReader(logFileStream))
+                        {
+                            List<string> listOfStrings = new List<string>();
+                          
+                            while (!logFileReader.EndOfStream)
+                            {
+                                listOfStrings.Add(logFileReader.ReadLine());
+                            }
+
+                            tempList.Add(new FileModel { FilePath = file, FileData = listOfStrings.ToArray() });
+                        }
+                    }
                 }
-                return tempList;
             }
             return tempList;
         }

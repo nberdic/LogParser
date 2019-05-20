@@ -30,6 +30,10 @@
         <i:EventTrigger EventName="SizeChanged">
             <cmd:EventToCommand Command="{Binding ChangeSizeWindowCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
+
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding CloseWindowCommand}" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
 
     <Grid>

@@ -55,12 +55,15 @@ namespace WPFLogFilter.ViewModel
             ExitCommand = new RelayCommand(ExitApplication);
             DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
+            CloseWindowCommand = new RelayCommand(CloseWindow);
         }
 
         public RelayCommand ClickMenuCommand { get; set; }
         public RelayCommand ClickOpenNotepadCommand { get; set; }
         public RelayCommand<ITab> CloseTabCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
+
+        public RelayCommand CloseWindowCommand { get; set; }
 
         public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
         public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
@@ -165,7 +168,7 @@ namespace WPFLogFilter.ViewModel
 
         private void CloseTab(ITab selectedTab)
         {
-            if (selectedTab!=null)
+            if (selectedTab != null)
             {
                 Tabs.Remove(selectedTab);
                 _iLog.Info("File closed: " + ((TabViewModel)selectedTab).TabFileName);
@@ -190,9 +193,21 @@ namespace WPFLogFilter.ViewModel
 
             foreach (string file in filePathList)
             {
-                if (file.EndsWith("txt") || (file.EndsWith("log")))
+                File.SetAttributes(file, FileAttributes.Normal);
+
+                using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    tempList.Add(new FileModel { FilePath = file, FileData = File.ReadAllLines(file) });
+                    using (StreamReader logFileReader = new StreamReader(logFileStream))
+                    {
+                        List<string> listOfStrings = new List<string>();
+
+                        while (!logFileReader.EndOfStream)
+                        {
+                            listOfStrings.Add(logFileReader.ReadLine());
+                        }
+
+                        tempList.Add(new FileModel { FilePath = file, FileData = listOfStrings.ToArray() });
+                    }
                 }
             }
             PopulateList(tempList);
@@ -201,6 +216,11 @@ namespace WPFLogFilter.ViewModel
         private void ChangeSizeWindow(EventArgs e)
         {
             WindowHeight = ((SizeChangedEventArgs)e).NewSize.Height;
+        }
+
+        private void CloseWindow()
+        {
+            _iLog.Info("User has exited the application");
         }
     }
 }
