@@ -100,7 +100,7 @@ namespace WPFLogFilterTests.ViewModelTests
         public void ClickMenuCommand_DialogWrapperReturnsNullList_VisibilityFalse()
         {
             // Arrange
-            iDialogWrapper.Setup(x => x.GetLines()).Returns((List<FileModel>)null);
+            iDialogWrapper.Setup(x => x.GetPaths()).Returns((List<string>)null);
 
             // Act
             viewModel.ClickMenuCommand.Execute(null);
@@ -113,7 +113,7 @@ namespace WPFLogFilterTests.ViewModelTests
         public void ClickMenuCommand_DialogWrapperReturnsEmptyList_VisibilityFalse()
         {
             // Arrange
-            iDialogWrapper.Setup(x => x.GetLines()).Returns(new List<FileModel>());
+            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>());
 
             // Act
             viewModel.ClickMenuCommand.Execute(null);
@@ -126,11 +126,9 @@ namespace WPFLogFilterTests.ViewModelTests
         public void ClickMenuCommand_DialogWrapperReturnsListWith3Objects_SelectedIndex2_VisibilityTrue()
         {
             // Arrange
-            iDialogWrapper.Setup(x => x.GetLines()).Returns(new List<FileModel>()
+            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
             {
-                new FileModel(),
-                new FileModel(),
-                new FileModel()
+                
             });
 
             iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategy());
@@ -151,9 +149,9 @@ namespace WPFLogFilterTests.ViewModelTests
         public void ClickMenuCommand_ParsingFactoryMockStrategyReturnsNull_VisibilityFalse()
         {
             // Arrange
-            iDialogWrapper.Setup(x => x.GetLines()).Returns(new List<FileModel>()
+            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
             {
-                new FileModel(),
+                
             });
 
             iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns((new MockParsingStrategyIsNull()));
@@ -173,9 +171,9 @@ namespace WPFLogFilterTests.ViewModelTests
         public void ClickMenuCommand_ParsingFactoryMockStrategyReturnsEmpty_VisibilityTrue()
         {
             // Arrange
-            iDialogWrapper.Setup(x => x.GetLines()).Returns(new List<FileModel>()
+            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
             {
-                new FileModel()
+                
             });
 
             iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategyEmpty());
@@ -197,7 +195,7 @@ namespace WPFLogFilterTests.ViewModelTests
         {
             //Arrange
             observableCollection = new Mock<ObservableCollection<LogModel>>();
-            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
+            var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
             viewModel.Tabs.Add(tab);
 
             //Act
@@ -211,7 +209,7 @@ namespace WPFLogFilterTests.ViewModelTests
         public void CloseTabCommand_TabUsedForRemoveIsNull_ListCountIs1()
         {
             //Arrange
-            var tab = new TabViewModel(observableCollection.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
+            var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
             TabViewModel tabSentAsArgument = null;
             viewModel.Tabs.Add(tab);
 

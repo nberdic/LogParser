@@ -8,9 +8,9 @@ namespace WPFLogFilter.DialogWrapperFolder
 {
     public class DialogWrapper : IDialogWrapper
     {
-        public List<FileModel> GetLines()
+        public List<string> GetPaths()
         {
-            List<FileModel> tempList = new List<FileModel>();
+            List<string> listOfPaths = new List<string>();
             OpenFileDialog openFileDlg = new OpenFileDialog();
             openFileDlg.DefaultExt = ".txt";
             openFileDlg.Multiselect = true;
@@ -19,23 +19,10 @@ namespace WPFLogFilter.DialogWrapperFolder
             {
                 foreach (string file in openFileDlg.FileNames)
                 {
-                    using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    {
-                        using (StreamReader logFileReader = new StreamReader(logFileStream))
-                        {
-                            List<string> listOfStrings = new List<string>();
-                          
-                            while (!logFileReader.EndOfStream)
-                            {
-                                listOfStrings.Add(logFileReader.ReadLine());
-                            }
-
-                            tempList.Add(new FileModel { FilePath = file, FileData = listOfStrings.ToArray() });
-                        }
-                    }
+                    listOfPaths.Add(file);
                 }
             }
-            return tempList;
+            return listOfPaths;
         }
     }
 }

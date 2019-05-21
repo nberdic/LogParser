@@ -13,6 +13,7 @@ using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
+using WPFLogFilter.Observables;
 using WPFLogFilter.Parsing.ParseStrategy;
 using WPFLogFilter.Parsing.ParsingFactory;
 using WPFLogFilter.Tabs;
@@ -36,10 +37,10 @@ namespace WPFLogFilter.ViewModel
         private bool _tabVisibility = false;
         private double _windowHeight = 700;
 
-        public MainViewModel(IDialogWrapper dialogWrapper, IAssemblyWrapper assemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory, ILog iLog)
+        public MainViewModel(IDialogWrapper iDialogWrapper, IAssemblyWrapper iAssemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory, ILog iLog)
         {
-            _dialogWrapper = dialogWrapper ?? throw new ArgumentNullException(nameof(dialogWrapper));
-            _assemblyWrapper = assemblyWrapper ?? throw new ArgumentNullException(nameof(assemblyWrapper));
+            _dialogWrapper = iDialogWrapper ?? throw new ArgumentNullException(nameof(iDialogWrapper));
+            _assemblyWrapper = iAssemblyWrapper ?? throw new ArgumentNullException(nameof(iAssemblyWrapper));
             _parsingFactory = iParsingFactory ?? throw new ArgumentNullException(nameof(iParsingFactory));
             _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
             _iLog = iLog ?? throw new ArgumentNullException(nameof(iLog));
@@ -118,26 +119,20 @@ namespace WPFLogFilter.ViewModel
 
         private void SelectLogFile()
         {
-            PopulateList(_dialogWrapper.GetLines());
+            GenerateTabs(_dialogWrapper.GetPaths());
         }
 
-        private void PopulateList(List<FileModel> listFileInfo)
+        private void GenerateTabs(List<string> listOfPaths)
         {
-            if (listFileInfo != null)
+            if (listOfPaths != null)
             {
-                foreach (FileModel file in listFileInfo)
+                foreach (var path in listOfPaths)
                 {
-                    _parsingStrategy = _parsingFactory.Create(file.FileData);
-                    var parsingCollection = _parsingStrategy.Parse(file.FileData);
-                    if (parsingCollection == null)
-                    {
-                        return;
-                    }
-                    _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(file.FileData));
-                    Tabs.Add(new TabViewModel(_listLoadLine, _parsingStrategy, _filterFactory, _iLog, file.FilePath)
+                    Tabs.Add(new TabViewModel(_parsingFactory, _parsingStrategy, _filterFactory, _iLog, path)
                     {
                         ScrollViewHeight = WindowHeight
                     });
+
                     GetTabIndex();
                 }
             }
@@ -156,12 +151,12 @@ namespace WPFLogFilter.ViewModel
 
         private void OpenNotepad()
         {
-            List<FileModel> temp = _dialogWrapper.GetLines();
+            List<string> temp = _dialogWrapper.GetPaths();
             if (temp != null)
             {
-                foreach (FileModel file in temp)
+                foreach (var path in temp)
                 {
-                    Process.Start("notepad.exe", file.FilePath);
+                    Process.Start("notepad.exe", path);
                 }
             }
         }
@@ -189,26 +184,14 @@ namespace WPFLogFilter.ViewModel
         {
             string[] filePathList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            List<FileModel> tempList = new List<FileModel>();
+            List<string> tempList = new List<string>();
 
-            foreach (string file in filePathList)
+            foreach (var path in filePathList)
             {
-                using (FileStream logFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    using (StreamReader logFileReader = new StreamReader(logFileStream))
-                    {
-                        List<string> listOfStrings = new List<string>();
-
-                        while (!logFileReader.EndOfStream)
-                        {
-                            listOfStrings.Add(logFileReader.ReadLine());
-                        }
-
-                        tempList.Add(new FileModel { FilePath = file, FileData = listOfStrings.ToArray() });
-                    }
-                }
+                tempList.Add(path);
             }
-            PopulateList(tempList);
+
+            GenerateTabs(tempList);
         }
 
         private void ChangeSizeWindow(EventArgs e)

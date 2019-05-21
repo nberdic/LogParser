@@ -107,6 +107,7 @@
     <Compile Include="AsmblyWrapper\IAssemblyWrapper.cs" />
     <Compile Include="Model\FileModel.cs" />
     <Compile Include="Model\LogModel.cs" />
+    <Compile Include="Observables\FileWatcher.cs" />
     <Compile Include="Parsing\ParseFactory\IParsingFactory.cs" />
     <Compile Include="Parsing\ParseFactory\ParsingFactory.cs" />
     <Compile Include="Parsing\ParseStrategy\FullParsingStrategy.cs" />

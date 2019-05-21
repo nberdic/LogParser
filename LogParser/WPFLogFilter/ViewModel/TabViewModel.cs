@@ -9,7 +9,9 @@ using System.Linq;
 using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
+using WPFLogFilter.Observables;
 using WPFLogFilter.Parsing.ParseStrategy;
+using WPFLogFilter.Parsing.ParsingFactory;
 using WPFLogFilter.Tabs;
 
 namespace WPFLogFilter.ViewModel
@@ -26,6 +28,9 @@ namespace WPFLogFilter.ViewModel
         private ObservableCollection<LogModel> _regexList;
         private ObservableCollection<LogModel> _textList;
 
+        private FileWatcher _fileWatcher;
+
+        private IParsingFactory _parsingFactory;
         private IFilterFactory _filterfactory;
         private IParsingStrategy _parsingStrategy;
         private ILog _iLog;
@@ -55,13 +60,13 @@ namespace WPFLogFilter.ViewModel
         private string _logTextSearch = "";
         private double _scrollViewHeight = 700;
 
-        public TabViewModel(ObservableCollection<LogModel> list, IParsingStrategy strategy, IFilterFactory filterFactory, ILog log, string logFilePath)
+        public TabViewModel(IParsingFactory iParsingFactory, IParsingStrategy iStrategy, IFilterFactory iFilterFactory, ILog iLog, string logFilePath)
         {
-            _filterfactory = filterFactory;
-            _parsingStrategy = strategy;
-            ListLoadLine = list;
-            _backupList = list;
-            _iLog = log;
+            _fileWatcher = new FileWatcher();
+            _parsingFactory = iParsingFactory;
+            _filterfactory = iFilterFactory;
+            _parsingStrategy = iStrategy;
+            _iLog = iLog;
             _logFilePath = logFilePath;
 
             _eventIdList = new ObservableCollection<LogModel>();
@@ -74,14 +79,21 @@ namespace WPFLogFilter.ViewModel
             ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
+            PopulateList(GetLines(logFilePath));
+
             Messenger.Default.Register<double>(this, UpdateScrollViewSize);
 
             ExtractFileName();
 
             GetLogInfo();
 
-            NoDateCheckBoxIsValid = list.Any(x => x.DateTime == DateTime.MinValue);
+            _fileWatcher.OnFileModified = (s) => FileChangeEvent(s);
+            _fileWatcher.Watch(logFilePath);
+            
+            NoDateCheckBoxIsValid = _listLoadLine.Any(x => x.DateTime == DateTime.MinValue);
         }
+
+
 
         public ObservableCollection<LogModel> ListLoadLine
         {
@@ -96,6 +108,7 @@ namespace WPFLogFilter.ViewModel
                         ToggleColumnVisibility();
                     }
                 }
+
             }
         }
 
@@ -447,6 +460,42 @@ namespace WPFLogFilter.ViewModel
         {
             _iLog.Info("Loaded file: " + TabFileName);
             _iLog.Info(TabFileName + " has " + ListLoadLine.Count + " lines");
+        }
+
+        private void PopulateList(string[] logFileData)
+        {
+            _parsingStrategy = _parsingFactory.Create(logFileData);
+            var parsingCollection = _parsingStrategy.Parse(logFileData);
+            if (parsingCollection == null)
+            {
+                return;
+            }
+            ListLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(logFileData));
+            _backupList = _listLoadLine;
+        }
+
+        private string[] GetLines(string logFilePath)
+        {
+            using (FileStream logFileStream = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader logFileReader = new StreamReader(logFileStream))
+                {
+                    List<string> listOfStrings = new List<string>();
+
+                    while (!logFileReader.EndOfStream)
+                    {
+                        listOfStrings.Add(logFileReader.ReadLine());
+                    }
+                    return listOfStrings.ToArray();
+                }
+            }
+        }
+
+        private void FileChangeEvent(string logFilePath)
+        {
+            _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(GetLines(logFilePath)));
+            _backupList = _listLoadLine;
+            OnChangeCreateFilter();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace WPFLogFilter.DialogWrapperFolder
 {
     public interface IDialogWrapper
     {
-        List<FileModel> GetLines();
+        List<string> GetPaths();
     }
 }
