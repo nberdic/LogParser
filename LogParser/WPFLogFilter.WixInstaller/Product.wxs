@@ -6,10 +6,22 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes"/>
 
+    
+    
     <Feature Id="ProductFeature" Title="LogParser" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
+
+    <UI>
+
+      <Publish Dialog="ExitDlg"
+          Control="Finish" />
+
+    </UI>
+    <Property Value="Installation completed" />
+
+
   </Product>
 
   <Fragment>

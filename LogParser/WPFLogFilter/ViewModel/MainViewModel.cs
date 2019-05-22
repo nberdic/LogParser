@@ -29,11 +29,12 @@ namespace WPFLogFilter.ViewModel
         private IParsingStrategy _parsingStrategy;
         private IFilterFactory _filterFactory;
         private ILog _iLog;
-        private ITab _lastClosedTab = null;
+        private List<ITab> _closedTabsList;
 
         private string _titleVersion;
         private int _tabSelectIndex;
         private bool _tabVisibility = false;
+        private bool _showOpenClosedTab = false;
         private double _windowHeight = 700;
 
         /// <summary>
@@ -52,6 +53,7 @@ namespace WPFLogFilter.ViewModel
             _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
             _iLog = iLog ?? throw new ArgumentNullException(nameof(iLog));
             _listLoadLine = new ObservableCollection<LogModel>();
+            _closedTabsList = new List<ITab>();
 
             Tabs = new ObservableCollection<ITab>();
 
@@ -62,6 +64,7 @@ namespace WPFLogFilter.ViewModel
             DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
             CloseWindowCommand = new RelayCommand(CloseWindow);
+            LastClosedTabOpenEventCommand = new RelayCommand(ReOpenLastClosedTabEvent);
             LastClosedTabOpenCommand = new RelayCommand(ReOpenLastClosedTab);
 
             GetVersion();
@@ -100,7 +103,12 @@ namespace WPFLogFilter.ViewModel
         public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
 
         /// <summary>
-        /// Command CTRL+SHIFT+T which is used to open up the last closed tab.
+        /// Command triggered by an event which is used to open up the last closed tab.
+        /// </summary>
+        public RelayCommand LastClosedTabOpenEventCommand { get; set; }
+
+        /// <summary>
+        /// Command which is used to open up the last closed tab.
         /// </summary>
         public RelayCommand LastClosedTabOpenCommand { get; set; }
 
@@ -158,6 +166,18 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property which is used to toggle visibility of the Reopen closed tab menu option.
+        /// </summary>
+        public bool ShowOpenClosedTab
+        {
+            get => _showOpenClosedTab;
+            set
+            {
+                Set(ref _showOpenClosedTab, value);
+            }
+        }
+
         private void SelectLogFile()
         {
             GenerateTabs(_dialogWrapper.GetPaths());
@@ -206,13 +226,14 @@ namespace WPFLogFilter.ViewModel
         {
             if (selectedTab != null)
             {
-                _lastClosedTab = selectedTab;
+                _closedTabsList.Add(selectedTab);
                 Tabs.Remove(selectedTab);
                 _iLog.Info("File closed: " + selectedTab.TabFileName);
                 if (Tabs.Count == 0)
                 {
                     TabVisibility = false;
                 }
+                ShowOpenClosedTab = true;
             }
         }
 
@@ -244,15 +265,25 @@ namespace WPFLogFilter.ViewModel
             _iLog.Info("User has exited the application");
         }
 
-        private void ReOpenLastClosedTab()
+        private void ReOpenLastClosedTabEvent()
         {
             if ((Keyboard.IsKeyDown(Key.LeftCtrl)) && (Keyboard.IsKeyDown(Key.LeftShift)) && (Keyboard.IsKeyDown(Key.T)))
             {
-                if (_lastClosedTab != null)
+                ReOpenLastClosedTab();
+            }
+        }
+
+        private void ReOpenLastClosedTab()
+        {
+            if (_closedTabsList.Count != 0)
+            {
+                Tabs.Add(_closedTabsList.Last());
+                _closedTabsList.Remove(_closedTabsList.Last());
+                if (_closedTabsList.Count == 0)
                 {
-                    Tabs.Add(_lastClosedTab);
-                    GetTabIndex();
+                    ShowOpenClosedTab = false;
                 }
+                GetTabIndex();
             }
         }
     }

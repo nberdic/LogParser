@@ -61,6 +61,7 @@
             <Menu Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="White" FontSize="14" BorderThickness="1" BorderBrush="Black">
                 <MenuItem Header="_File" Height="25">
                     <MenuItem Header="_Open.." Command="{Binding ClickMenuCommand}"/>
+                    <MenuItem Header="_Open last closed tab (ctrl+shift+T)" Command="{Binding LastClosedTabOpenCommand}" Visibility="{Binding Path=ShowOpenClosedTab,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <MenuItem Header="_Open in notepad.." Command="{Binding ClickOpenNotepadCommand}"/>
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"/>
                 </MenuItem>
