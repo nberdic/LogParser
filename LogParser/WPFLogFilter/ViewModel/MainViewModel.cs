@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
@@ -28,6 +29,7 @@ namespace WPFLogFilter.ViewModel
         private IParsingStrategy _parsingStrategy;
         private IFilterFactory _filterFactory;
         private ILog _iLog;
+        private ITab _lastClosedTab = null;
 
         private string _titleVersion;
         private int _tabSelectIndex;
@@ -60,9 +62,12 @@ namespace WPFLogFilter.ViewModel
             DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
             CloseWindowCommand = new RelayCommand(CloseWindow);
+            LastClosedTabOpenCommand = new RelayCommand(ReOpenLastClosedTab);
 
             GetVersion();
         }
+
+
 
         /// <summary>
         /// Command used to open up a dialog menu where we select the files.
@@ -93,6 +98,11 @@ namespace WPFLogFilter.ViewModel
         /// Command which is used to catch the window resize event so the tabViewModels resize too.
         /// </summary>
         public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
+
+        /// <summary>
+        /// Command CTRL+SHIFT+T which is used to open up the last closed tab.
+        /// </summary>
+        public RelayCommand LastClosedTabOpenCommand { get; set; }
 
         /// <summary>
         /// A list of interfaces for TabViewModels, which gets an additional tab every time we load a log file.
@@ -196,6 +206,7 @@ namespace WPFLogFilter.ViewModel
         {
             if (selectedTab != null)
             {
+                _lastClosedTab = selectedTab;
                 Tabs.Remove(selectedTab);
                 _iLog.Info("File closed: " + selectedTab.TabFileName);
                 if (Tabs.Count == 0)
@@ -231,6 +242,18 @@ namespace WPFLogFilter.ViewModel
         private void CloseWindow()
         {
             _iLog.Info("User has exited the application");
+        }
+
+        private void ReOpenLastClosedTab()
+        {
+            if ((Keyboard.IsKeyDown(Key.LeftCtrl)) && (Keyboard.IsKeyDown(Key.LeftShift)) && (Keyboard.IsKeyDown(Key.T)))
+            {
+                if (_lastClosedTab != null)
+                {
+                    Tabs.Add(_lastClosedTab);
+                    GetTabIndex();
+                }
+            }
         }
     }
 }

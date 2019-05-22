@@ -23,7 +23,7 @@ namespace WPFLogFilter.Filter
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string searchText)
         {
             //The method splits the text into 3 categories, so the 2nd or the middle text can be highlighted.
-            int CaseSensitive = 1;
+            bool CaseSensitive = true;
             
             // If the search field is empty, reset to default
             if (string.IsNullOrWhiteSpace(searchText))
@@ -41,11 +41,11 @@ namespace WPFLogFilter.Filter
             if (searchText[searchText.Length - 1].Equals('¢'))
             {
                 searchText = searchText.Remove(searchText.Length - 1);
-                CaseSensitive = 0;
+                CaseSensitive = false;
             }
 
             //This is the filtering with the case sensitivity on, also it puts the text that needs to be highlighted into the HighLightedText.
-            if (CaseSensitive == 1)
+            if (CaseSensitive)
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => x.Text.Contains(searchText)));
 

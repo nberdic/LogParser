@@ -37,8 +37,13 @@
         <i:EventTrigger EventName="Closing">
             <cmd:EventToCommand Command="{Binding CloseWindowCommand}" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
 
+        <i:EventTrigger EventName="KeyDown">
+            <cmd:EventToCommand Command="{Binding LastClosedTabOpenCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+   
     <!--Setting up the main grid parameters and also the Main menu-->
     <Grid>
         <Grid.RowDefinitions>

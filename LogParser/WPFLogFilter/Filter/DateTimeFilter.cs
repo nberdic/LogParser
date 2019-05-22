@@ -34,13 +34,13 @@ namespace WPFLogFilter.Filter
                 return list;
             }
 
-            int noDateSensitive = 0;
+            bool noDateSensitive = false;
             string[] times = search.Split('¥');
 
             //¢ at the end means show DateTime.Minvalue, we toggle a check, and remove the symbol so we can convert 2 strings into 2 dates
             if (times[1].EndsWith("¢"))
             {
-                noDateSensitive = 1;
+                noDateSensitive = true;
                 times[1] = times[1].Remove(times[1].Length - 1);
                 search = search.Remove(search.Length - 1);
             }
@@ -91,7 +91,7 @@ namespace WPFLogFilter.Filter
                     && (DateTime.TryParse(date.ToShortDateString() + " " + times[1], out DateTime dt2)))
                 {
                     //if the symbol ¢ was in the string, that means that we need all of the results + the results with DateTime.MinValue
-                    if (noDateSensitive == 1)
+                    if (noDateSensitive)
                     {
                         dt2 = dt2.AddSeconds(1);
                         var query = (from item in list
