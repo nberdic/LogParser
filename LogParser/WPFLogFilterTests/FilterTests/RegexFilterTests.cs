@@ -24,18 +24,18 @@ namespace WPFLogFilterTests.FilterTests
             filter = new RegexFilter();
         }
 
-        [TestMethod]
-        public void RegexFilter_DefaultSearchStringNotCaseSensitive_ReturnListWith2Objects()
-        {
-            //Arrange
-            search = "m¢";
+        //[TestMethod]
+        //public void RegexFilter_DefaultSearchStringNotCaseSensitive_ReturnListWith2Objects()
+        //{
+        //    //Arrange
+        //    search = "m¢";
 
-            //Act
-            listOfLines = filter.Filter(listOfLines,search);
+        //    //Act
+        //    listOfLines = filter.Filter(listOfLines,search);
 
-            //Assert
-            Assert.AreEqual(2,listOfLines.Count);
-        }
+        //    //Assert
+        //    Assert.AreEqual(2,listOfLines.Count);
+        //}
 
         [TestMethod]
         public void RegexFilter_LimitedSearchStringCaseSensitive_ReturnListWith1Object()
@@ -63,31 +63,31 @@ namespace WPFLogFilterTests.FilterTests
             Assert.AreEqual(3, listOfLines.Count);
         }
 
-        [TestMethod]
-        public void RegexFilter_EmptySearchStringWithSymbol_ReturnListWithAll3Objects()
-        {
-            //Arrange
-            search = "¢";
+        //[TestMethod]
+        //public void RegexFilter_EmptySearchStringWithSymbol_ReturnListWithAll3Objects()
+        //{
+        //    //Arrange
+        //    search = "¢";
 
-            //Act
-            listOfLines = filter.Filter(listOfLines, search);
+        //    //Act
+        //    listOfLines = filter.Filter(listOfLines, search);
 
-            //Assert
-            Assert.AreEqual(3, listOfLines.Count);
-        }
+        //    //Assert
+        //    Assert.AreEqual(3, listOfLines.Count);
+        //}
 
-        [TestMethod]
-        public void RegexFilter_RegexStringNotCaseSensitive_ReturnListWith1Object()
-        {
-            //Arrange
-            search = "[M]¢";
+        //[TestMethod]
+        //public void RegexFilter_RegexStringNotCaseSensitive_ReturnListWith1Object()
+        //{
+        //    //Arrange
+        //    search = "[M]¢";
 
-            //Act
-            listOfLines = filter.Filter(listOfLines, search);
+        //    //Act
+        //    listOfLines = filter.Filter(listOfLines, search);
 
-            //Assert
-            Assert.AreEqual(1, listOfLines.Count);
-        }
+        //    //Assert
+        //    Assert.AreEqual(1, listOfLines.Count);
+        //}
 
         [TestMethod]
         public void RegexFilter_RegexStringCaseSensitive_ReturnListWith1Object()

@@ -5,8 +5,17 @@ using WPFLogFilter.Model;
 
 namespace WPFLogFilter.Filter
 {
+    /// <summary>
+    /// this class is used to filter the log lines with the beginning and end dates.
+    /// </summary>
     public class DateTimeFilter : IFilter
     {
+        /// <summary>
+        /// This method is used to filter the log lines using the in-between-two-dates criteria.
+        /// </summary>
+        /// <param name="list">List of log objects</param>
+        /// <param name="search">Two Dates combined into a string and used as criteria for filtering</param>
+        /// <returns></returns>
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search)
         {
             search = search.Trim();

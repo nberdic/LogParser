@@ -9,12 +9,23 @@ using WPFLogFilter.Model;
 
 namespace WPFLogFilter.Filter
 {
+    /// <summary>
+    /// This class is used to filter the text column.
+    /// </summary>
     public class TextFilter : IFilter
     {
+        /// <summary>
+        /// This method filters the text column, with the search textbox criteria.
+        /// </summary>
+        /// <param name="list">List of log objects</param>
+        /// <param name="searchText">Textbox search criteria</param>
+        /// <returns></returns>
         public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string searchText)
         {
-            int notCaseSensitive = 0;
-
+            //The method splits the text into 3 categories, so the 2nd or the middle text can be highlighted.
+            int CaseSensitive = 1;
+            
+            // If the search field is empty, reset to default
             if (string.IsNullOrWhiteSpace(searchText))
             {
                 foreach (var model in list)
@@ -26,13 +37,15 @@ namespace WPFLogFilter.Filter
                 return list;
             }
 
+            //The ¢ symbol at the end of the searchText indicates that the case sensitivity is ON.
             if (searchText[searchText.Length - 1].Equals('¢'))
             {
                 searchText = searchText.Remove(searchText.Length - 1);
-                notCaseSensitive = 1;
+                CaseSensitive = 0;
             }
 
-            if (notCaseSensitive == 0)
+            //This is the filtering with the case sensitivity on, also it puts the text that needs to be highlighted into the HighLightedText.
+            if (CaseSensitive == 1)
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => x.Text.Contains(searchText)));
 
@@ -48,6 +61,8 @@ namespace WPFLogFilter.Filter
                     model.LastText = string.Join("", result);
                 }
             }
+
+            //This is the filtering with the case sensitivity off, also it puts the text that needs to be highlighted into the HighLightedText.
             else
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => x.Text.ToLower().Contains(searchText.ToLower())));

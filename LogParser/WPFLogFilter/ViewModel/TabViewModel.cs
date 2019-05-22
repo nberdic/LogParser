@@ -9,7 +9,7 @@ using System.Linq;
 using WPFLogFilter.Enums;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
-using WPFLogFilter.Observables;
+using WPFLogFilter.FileWatchers;
 using WPFLogFilter.Parsing.ParseStrategy;
 using WPFLogFilter.Parsing.ParsingFactory;
 using WPFLogFilter.Tabs;
@@ -38,7 +38,6 @@ namespace WPFLogFilter.ViewModel
         private IList<LogLevelEnum> _logLvlComboEnumList;
         private LogLevelEnum _logLevelValues;
 
-        private bool _idIsValid = false;
         private bool _dateTimeIsValid = false;
         private bool _threadIdIsValid = false;
         private bool _logLevelIsValid = false;
@@ -48,7 +47,6 @@ namespace WPFLogFilter.ViewModel
         private bool _caseSensitiveCheckBox = true;
         private bool _noDateCheckBox = true;
         private bool _regexSearchCheckBox = false;
-        private bool _openFileIsValid = false;
 
         private string _logFilePath;
         private string _tabFileName;
@@ -60,12 +58,20 @@ namespace WPFLogFilter.ViewModel
         private string _logTextSearch = "";
         private double _scrollViewHeight = 700;
 
-        public TabViewModel(IParsingFactory iParsingFactory, IParsingStrategy iStrategy, IFilterFactory iFilterFactory, ILog iLog, string logFilePath)
+        /// <summary>
+        /// Constructor for the TabViewModel
+        /// </summary>
+        /// <param name="iParsingFactory">Interface for determining which parsing strategy we need to use</param>
+        /// <param name="iParsingStrategy">Interface for the determining how to parse a log file</param>
+        /// <param name="iFilterFactory">Interface for the filters we need to use</param>
+        /// <param name="iLog">Interface for the LogParse's log file</param>
+        /// <param name="logFilePath">A string containing the path to the log file</param>
+        public TabViewModel(IParsingFactory iParsingFactory, IParsingStrategy iParsingStrategy, IFilterFactory iFilterFactory, ILog iLog, string logFilePath)
         {
             _fileWatcher = new FileWatcher();
             _parsingFactory = iParsingFactory;
             _filterfactory = iFilterFactory;
-            _parsingStrategy = iStrategy;
+            _parsingStrategy = iParsingStrategy;
             _iLog = iLog;
             _logFilePath = logFilePath;
 
@@ -84,7 +90,6 @@ namespace WPFLogFilter.ViewModel
             Messenger.Default.Register<double>(this, UpdateScrollViewSize);
 
             ExtractFileName();
-
             GetLogInfo();
 
             _fileWatcher.OnFileModified = (s) => FileChangeEvent(s);
@@ -93,8 +98,9 @@ namespace WPFLogFilter.ViewModel
             NoDateCheckBoxIsValid = _listLoadLine.Any(x => x.DateTime == DateTime.MinValue);
         }
 
-
-
+        /// <summary>
+        /// Property used as a Main list that is displayed in the DataGrid.
+        /// </summary>
         public ObservableCollection<LogModel> ListLoadLine
         {
             get => _listLoadLine;
@@ -108,10 +114,12 @@ namespace WPFLogFilter.ViewModel
                         ToggleColumnVisibility();
                     }
                 }
-
             }
         }
 
+        /// <summary>
+        /// Property used to toggle the Case Sensitivity of the text search filter.
+        /// </summary>
         public bool CaseSensitiveCheckBox
         {
             get => _caseSensitiveCheckBox;
@@ -122,6 +130,22 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to toggle between the Regex and ordinary text search.
+        /// </summary>
+        public bool RegexSearchCheckBox
+        {
+            get => _regexSearchCheckBox;
+            set
+            {
+                Set(ref _regexSearchCheckBox, value);
+                OnChangeCreateFilter();
+            }
+        }
+
+        /// <summary>
+        /// Property used to toggle the ,,show dates with minimum value" in the DataGrid.
+        /// </summary>
         public bool NoDateCheckBox
         {
             get => _noDateCheckBox;
@@ -132,15 +156,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public bool IdIsValid
-        {
-            get => _idIsValid;
-            set
-            {
-                Set(ref _idIsValid, value);
-            }
-        }
-
+        /// <summary>
+        /// Property used to hide/show the Date/Time column in the DataGrid.
+        /// </summary>
         public bool DateTimeIsValid
         {
             get => _dateTimeIsValid;
@@ -150,6 +168,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to hide/show the ThreadId column in the DataGrid.
+        /// </summary>
         public bool ThreadIdIsValid
         {
             get => _threadIdIsValid;
@@ -159,6 +180,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to hide/show the LogLevel column in the DataGrid.
+        /// </summary>
         public bool LogLevelIsValid
         {
             get => _logLevelIsValid;
@@ -168,6 +192,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to hide/show the EventId column in the DataGrid.
+        /// </summary>
         public bool EventIdIsValid
         {
             get => _eventIdIsValid;
@@ -177,6 +204,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to hide/show the Text column in the DataGrid.
+        /// </summary>
         public bool TextIsValid
         {
             get => _textIsValid;
@@ -186,6 +216,21 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to hide/show the checkbox for ,,dates with minimum value".
+        /// </summary>
+        public bool NoDateCheckBoxIsValid
+        {
+            get => _noDateCheckBoxIsValid;
+            set
+            {
+                Set(ref _noDateCheckBoxIsValid, value);
+            }
+        }
+
+        /// <summary>
+        /// Property used to filter the Date/Time, this is a starting parameter (From this date).
+        /// </summary>
         public string DateTimeSearch1
         {
             get => _dateTimeSearch1;
@@ -196,6 +241,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to filter the Date/Time, this is a ending parameter (To this date).
+        /// </summary>
         public string DateTimeSearch2
         {
             get => _dateTimeSearch2;
@@ -206,6 +254,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to filter the ThreadId.
+        /// </summary>
         public string ThreadIdSearch
         {
             get => _threadIdSearch;
@@ -216,6 +267,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property that is used by the list that is used by the combobox, and that houses all the possible values of the LogLevel.
+        /// </summary>
         public LogLevelEnum LogLevelValues
         {
             get => _logLevelValues;
@@ -226,6 +280,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property that is used to filter the EventId.
+        /// </summary>
         public string EventIdSearch
         {
             get => _eventIdSearch;
@@ -236,6 +293,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property that is used to filter the Text.
+        /// </summary>
         public string LogTextSearch
         {
             get => _logTextSearch;
@@ -246,6 +306,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property that is used to store all the filter lists that the log lines go through.
+        /// </summary>
         public ObservableCollection<ObservableCollection<LogModel>> ListFilters
         {
             get => _listFilters;
@@ -255,15 +318,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public bool OpenFileIsValid
-        {
-            get => _openFileIsValid;
-            set
-            {
-                Set(ref _openFileIsValid, value);
-            }
-        }
-
+        /// <summary>
+        /// Property of Enum values that is used by the LogLevel combobox.
+        /// </summary>
         public IList<LogLevelEnum> LogLvlComboEnumList
         {
             get => _logLvlComboEnumList;
@@ -273,6 +330,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used for the name of the tab, based on the file name.
+        /// </summary>
         public string TabFileName
         {
             get => _tabFileName;
@@ -282,6 +342,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property used to modify the DataGrid height based on window height.
+        /// </summary>
         public double ScrollViewHeight
         {
             get
@@ -294,34 +357,13 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public bool NoDateCheckBoxIsValid
-        {
-            get => _noDateCheckBoxIsValid;
-            set
-            {
-                Set(ref _noDateCheckBoxIsValid, value);
-            }
-        }
-
-        public bool RegexSearchCheckBox
-        {
-            get => _regexSearchCheckBox;
-            set
-            {
-                Set(ref _regexSearchCheckBox, value);
-                OnChangeCreateFilter();
-            }
-        }
-
         private void ToggleColumnVisibility()
         {
-            IdIsValid = true;
             LogLevelIsValid = true;
             TextIsValid = true;
             ThreadIdIsValid = true;
             EventIdIsValid = true;
             DateTimeIsValid = true;
-            OpenFileIsValid = true;
             if (_parsingStrategy is NoThreadIdParsingStrategy)
             {
                 ThreadIdIsValid = false;
@@ -341,6 +383,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        //Every time the user changes any filter field, all the filter information goes through the list, filters it, then compares all the filters with each other,
+        //and we get the result in the single list. Special symbols are used to tell the method that the checkboxes for ,,also show dates who have minimum value"" and
+        //,,case sensivitivy is enabled''.
         private void OnChangeCreateFilter()
         {
             IFilter filterFactory;
@@ -367,13 +412,13 @@ namespace WPFLogFilter.ViewModel
             if (!_regexSearchCheckBox)
             {
                 filterFactory = _filterfactory.Create(7);
-                if (!_caseSensitiveCheckBox)
+                if (_caseSensitiveCheckBox)
                 {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 7);
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 7);
                 }
                 else
                 {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 7);
+                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 7);
                 }
             }
             else
@@ -383,6 +428,7 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        //Adds a list of results to a specific filter. If there was a previous filter list, deletes it and replaces it with the current one.
         private ObservableCollection<LogModel> AddRemoveFilter(ObservableCollection<LogModel> list, int caseNo)
         {
             switch (caseNo)
@@ -417,6 +463,7 @@ namespace WPFLogFilter.ViewModel
                     break;
             }
 
+            //Goes through a list of filters, finds their common objects and produces a list.
             if (list != null)
             {
                 ListFilters.Add(list);

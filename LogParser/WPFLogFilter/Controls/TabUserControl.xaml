@@ -9,12 +9,13 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
      >
+    <!--If bool = false = hide, if bool = true = show-->
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
+    <!--Setting up the grid parameters for all 3 levels-->
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="30"/>
@@ -32,9 +33,8 @@
         </Grid.ColumnDefinitions>
 
         <!--Level1-->
-        <Border  Grid.Row="0" Grid.Column="0" BorderThickness="2,2,0,2" BorderBrush="Black"
-                 Visibility="{Binding Path=IdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, 
-                 Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
+        <!--This level displays the name of each column, and on a case-to-case basis toggles their visibility, it also contains checkboxes-->
+        <Border  Grid.Row="0" Grid.Column="0" BorderThickness="2,2,0,2" BorderBrush="Black">
             <TextBlock Margin="5,0,0,0" MinWidth="59" Text="ID" TextAlignment="Left"/>
         </Border>
         <Border  Grid.Row="0" Grid.Column="1" BorderThickness="2,2,0,2" BorderBrush="Black" Visibility="{Binding   Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
@@ -58,7 +58,6 @@
                 <TextBlock Text="Regex search" Margin="0,0,3,0" TextAlignment="Left" />
                 <CheckBox Margin="0,0,10,0" IsChecked="{Binding Path=RegexSearchCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
 
-
                 <TextBlock Text="Show no-date lines" Margin="0,0,3,0" Visibility="{Binding Path=NoDateCheckBoxIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, 
                  Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" TextAlignment="Left" />
                 <CheckBox IsChecked="{Binding Path=NoDateCheckBox,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=NoDateCheckBoxIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}" />
@@ -66,6 +65,7 @@
         </Border>
 
         <!--Level2-->
+        <!--This is the area with the filter textboxes, timepickers and comboboxes, each change toggles all the filters-->
         <Border BorderThickness="2,0,0,0" BorderBrush="Black" Grid.Row="1" Grid.Column="1" Visibility="{Binding Path=DateTimeIsValid, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
             <StackPanel Margin="5,0,0,5" Orientation="Horizontal" HorizontalAlignment="Center" >
                 <materialDesign:TimePicker
@@ -105,7 +105,7 @@
         </Border>
 
         <!--Level3-->
-
+        <!--This area contrains a scrollable DataGrid which is used to display all of log strings that are the results of multiple filters-->
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="6" >
             <Grid Height="{Binding ScrollViewHeight,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">
                 
@@ -184,7 +184,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-
+                        <!--Displays the text column in 3 parts, so it's possible to highlight the text that is currently in the search textbox, the 2nd part is highlighted-->
                         <DataGridTemplateColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Width="*" MinWidth="500">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -201,15 +201,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
-                        <!--<DataGridTextColumn Header="Text" HeaderStyle="{StaticResource LeftGridHeaderStyle}" Binding="{Binding Text,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="*" MinWidth="500">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style>
-                                    <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>-->
-
+                        <!--A warning icon appears when the line can't be formated, the line is just a string, date/time result is minimum value, or the eventId is -1-->
                         <DataGridTemplateColumn Header="Warning" MinWidth="40" HeaderStyle="{StaticResource CenterGridHeaderStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

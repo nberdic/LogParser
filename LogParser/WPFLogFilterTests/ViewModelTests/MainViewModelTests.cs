@@ -122,28 +122,28 @@ namespace WPFLogFilterTests.ViewModelTests
             Assert.IsFalse(viewModel.TabVisibility);
         }
 
-        [TestMethod]
-        public void ClickMenuCommand_DialogWrapperReturnsListWith3Objects_SelectedIndex2_VisibilityTrue()
-        {
-            // Arrange
-            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
-            {
+        //[TestMethod]
+        //public void ClickMenuCommand_DialogWrapperReturnsListWith3Objects_SelectedIndex2_VisibilityTrue()
+        //{
+        //    // Arrange
+        //    iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
+        //    {
                 
-            });
+        //    });
 
-            iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategy());
-            iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<LogModel>()
-            {
-                new LogModel()
-            });
+        //    iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategy());
+        //    iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<LogModel>()
+        //    {
+        //        new LogModel()
+        //    });
 
-            // Act
-            viewModel.ClickMenuCommand.Execute(null);
+        //    // Act
+        //    viewModel.ClickMenuCommand.Execute(null);
 
-            // Assert
-            Assert.AreEqual(2, viewModel.TabSelectIndex);
-            Assert.IsTrue(viewModel.TabVisibility);
-        }
+        //    // Assert
+        //    Assert.AreEqual(2, viewModel.TabSelectIndex);
+        //    Assert.IsTrue(viewModel.TabVisibility);
+        //}
 
         [TestMethod]
         public void ClickMenuCommand_ParsingFactoryMockStrategyReturnsNull_VisibilityFalse()
@@ -167,58 +167,58 @@ namespace WPFLogFilterTests.ViewModelTests
             Assert.IsFalse(viewModel.TabVisibility);
         }
 
-        [TestMethod]
-        public void ClickMenuCommand_ParsingFactoryMockStrategyReturnsEmpty_VisibilityTrue()
-        {
-            // Arrange
-            iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
-            {
+        //[TestMethod]
+        //public void ClickMenuCommand_ParsingFactoryMockStrategyReturnsEmpty_VisibilityTrue()
+        //{
+        //    // Arrange
+        //    iDialogWrapper.Setup(x => x.GetPaths()).Returns(new List<string>()
+        //    {
                 
-            });
+        //    });
 
-            iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategyEmpty());
-            iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<LogModel>()
-            {
-                new LogModel()
-            });
+        //    iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns(new MockParsingStrategyEmpty());
+        //    iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<LogModel>()
+        //    {
+        //        new LogModel()
+        //    });
 
-            // Act
-            viewModel.ClickMenuCommand.Execute(null);
+        //    // Act
+        //    viewModel.ClickMenuCommand.Execute(null);
 
-            // Assert
-            Assert.IsTrue(viewModel.TabVisibility);
-            //Even though the file is empty, show it nonetheless
-        }
+        //    // Assert
+        //    Assert.IsTrue(viewModel.TabVisibility);
+        //    //Even though the file is empty, show it nonetheless
+        //}
 
-        [TestMethod]
-        public void CloseTabCommand_ListHas1Tab_ListCountIsZero()
-        {
-            //Arrange
-            observableCollection = new Mock<ObservableCollection<LogModel>>();
-            var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
-            viewModel.Tabs.Add(tab);
+        //[TestMethod]
+        //public void CloseTabCommand_ListHas1Tab_ListCountIsZero()
+        //{
+        //    //Arrange
+        //    observableCollection = new Mock<ObservableCollection<LogModel>>();
+        //    var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
+        //    viewModel.Tabs.Add(tab);
 
-            //Act
-            viewModel.CloseTabCommand.Execute(tab);
+        //    //Act
+        //    viewModel.CloseTabCommand.Execute(tab);
 
-            //Assert
-            Assert.AreEqual(0, viewModel.Tabs.Count);
-        }
+        //    //Assert
+        //    Assert.AreEqual(0, viewModel.Tabs.Count);
+        //}
 
-        [TestMethod]
-        public void CloseTabCommand_TabUsedForRemoveIsNull_ListCountIs1()
-        {
-            //Arrange
-            var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
-            TabViewModel tabSentAsArgument = null;
-            viewModel.Tabs.Add(tab);
+        //[TestMethod]
+        //public void CloseTabCommand_TabUsedForRemoveIsNull_ListCountIs1()
+        //{
+        //    //Arrange
+        //    var tab = new TabViewModel(iParsingFactory.Object, iParsingStrategy.Object, iFilterFactory.Object, iLog.Object, It.IsAny<string>());
+        //    TabViewModel tabSentAsArgument = null;
+        //    viewModel.Tabs.Add(tab);
 
-            //Act
-            viewModel.CloseTabCommand.Execute(tabSentAsArgument);
+        //    //Act
+        //    viewModel.CloseTabCommand.Execute(tabSentAsArgument);
 
-            //Assert
-            Assert.AreEqual(1, viewModel.Tabs.Count);
-        }
+        //    //Assert
+        //    Assert.AreEqual(1, viewModel.Tabs.Count);
+        //}
 
     }
 }

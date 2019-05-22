@@ -1,17 +1,3 @@
-/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:WPFLogFilter"
-                           x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-
-  You can also use Blend to do all this with the tool's support.
-  See http://www.galasoft.ch/mvvm
-*/
-
 using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
 using log4net;
@@ -20,9 +6,7 @@ using System.IO;
 using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
-using WPFLogFilter.Observables;
 using WPFLogFilter.Parsing.ParsingFactory;
-//using Microsoft.Practices.ServiceLocation;
 
 namespace WPFLogFilter.ViewModel
 {
@@ -54,6 +38,9 @@ namespace WPFLogFilter.ViewModel
             logger.Info("Program started");
         }
 
+        /// <summary>
+        /// Gets instances of the MainViewModel.
+        /// </summary>
         public MainViewModel Main
         {
             get

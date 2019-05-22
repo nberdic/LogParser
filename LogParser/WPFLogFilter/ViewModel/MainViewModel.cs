@@ -6,14 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using WPFLogFilter.AsmblyWrapper;
 using WPFLogFilter.DialogWrapperFolder;
 using WPFLogFilter.Filter;
 using WPFLogFilter.Model;
-using WPFLogFilter.Observables;
 using WPFLogFilter.Parsing.ParseStrategy;
 using WPFLogFilter.Parsing.ParsingFactory;
 using WPFLogFilter.Tabs;
@@ -32,11 +30,18 @@ namespace WPFLogFilter.ViewModel
         private ILog _iLog;
 
         private string _titleVersion;
-        private string _tabFileName;
         private int _tabSelectIndex;
         private bool _tabVisibility = false;
         private double _windowHeight = 700;
 
+        /// <summary>
+        /// Constructor for the MainViewModel
+        /// </summary>
+        /// <param name="iDialogWrapper">Interface for the log-file-open-selection-dialog</param>
+        /// <param name="iAssemblyWrapper">Interface for the get-application-version class</param>
+        /// <param name="iParsingFactory">Interface for determining which parsing strategy we need to use</param>
+        /// <param name="iFilterFactory">Interface for the filters we need to use in the TabViewModel</param>
+        /// <param name="iLog">Interface for the LogParse's log file</param>
         public MainViewModel(IDialogWrapper iDialogWrapper, IAssemblyWrapper iAssemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory, ILog iLog)
         {
             _dialogWrapper = iDialogWrapper ?? throw new ArgumentNullException(nameof(iDialogWrapper));
@@ -44,11 +49,9 @@ namespace WPFLogFilter.ViewModel
             _parsingFactory = iParsingFactory ?? throw new ArgumentNullException(nameof(iParsingFactory));
             _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
             _iLog = iLog ?? throw new ArgumentNullException(nameof(iLog));
-
             _listLoadLine = new ObservableCollection<LogModel>();
-            Tabs = new ObservableCollection<ITab>();
 
-            GetVersion();
+            Tabs = new ObservableCollection<ITab>();
 
             ClickMenuCommand = new RelayCommand(SelectLogFile);
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
@@ -57,20 +60,48 @@ namespace WPFLogFilter.ViewModel
             DropInFileCommand = new RelayCommand<DragEventArgs>(OpenDroppedFiles);
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
             CloseWindowCommand = new RelayCommand(CloseWindow);
+
+            GetVersion();
         }
 
+        /// <summary>
+        /// Command used to open up a dialog menu where we select the files.
+        /// </summary>
         public RelayCommand ClickMenuCommand { get; set; }
+
+        /// <summary>
+        /// Command used to open up a dialog menu where we select the files which are opened in Notepad.
+        /// </summary>
         public RelayCommand ClickOpenNotepadCommand { get; set; }
+        /// <summary>
+        /// Command which is used to remove the current TabViewModel from Tabs list, therefore closing it.
+        /// </summary>
         public RelayCommand<ITab> CloseTabCommand { get; set; }
+        /// <summary>
+        /// Command which is used to Exit the LogParser application.
+        /// </summary>
         public RelayCommand ExitCommand { get; set; }
-
+        /// <summary>
+        /// Command which is used to catch the event that closes the application.
+        /// </summary>
         public RelayCommand CloseWindowCommand { get; set; }
-
+        /// <summary>
+        /// Command which is used to catch the fileDrop events so they can be opened and loaded.
+        /// </summary>
         public RelayCommand<DragEventArgs> DropInFileCommand { get; set; }
+        /// <summary>
+        /// Command which is used to catch the window resize event so the tabViewModels resize too.
+        /// </summary>
         public RelayCommand<EventArgs> ChangeSizeWindowCommand { get; set; }
 
+        /// <summary>
+        /// A list of interfaces for TabViewModels, which gets an additional tab every time we load a log file.
+        /// </summary>
         public ObservableCollection<ITab> Tabs { get; set; }
 
+        /// <summary>
+        /// Property for Main Window Title version
+        /// </summary>
         public string TitleVersion
         {
             get => _titleVersion;
@@ -80,15 +111,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
-        public string TabFileName
-        {
-            get => _tabFileName;
-            set
-            {
-                Set(ref _tabFileName, value);
-            }
-        }
-
+        /// <summary>
+        /// Property which is used to tell MainWindows.xaml's TabControl to select the last tab that was loaded.
+        /// </summary>
         public int TabSelectIndex
         {
             get => _tabSelectIndex;
@@ -98,6 +123,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property which is used to hide the UserControl window until a file is loaded.
+        /// </summary>
         public bool TabVisibility
         {
             get => _tabVisibility;
@@ -107,6 +135,9 @@ namespace WPFLogFilter.ViewModel
             }
         }
 
+        /// <summary>
+        /// Property which is used to note the current window height, so it can be sent to the TabViewModel's User Control's datagrid, so it resizes with the height of the main window.
+        /// </summary>
         public double WindowHeight
         {
             get => _windowHeight;
@@ -166,7 +197,7 @@ namespace WPFLogFilter.ViewModel
             if (selectedTab != null)
             {
                 Tabs.Remove(selectedTab);
-                _iLog.Info("File closed: " + ((TabViewModel)selectedTab).TabFileName);
+                _iLog.Info("File closed: " + selectedTab.TabFileName);
                 if (Tabs.Count == 0)
                 {
                     TabVisibility = false;
@@ -177,7 +208,6 @@ namespace WPFLogFilter.ViewModel
         private void ExitApplication()
         {
             Application.Current.Shutdown();
-            _iLog.Info("User has exited the application");
         }
 
         private void OpenDroppedFiles(DragEventArgs e)
@@ -190,7 +220,6 @@ namespace WPFLogFilter.ViewModel
             {
                 tempList.Add(path);
             }
-
             GenerateTabs(tempList);
         }
 

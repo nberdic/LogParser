@@ -6,8 +6,15 @@ using WPFLogFilter.Model;
 
 namespace WPFLogFilter.DialogWrapperFolder
 {
+    /// <summary>
+    /// This class is used to get the list of file paths from the dialog menu.
+    /// </summary>
     public class DialogWrapper : IDialogWrapper
     {
+        /// <summary>
+        /// This method is used to get the list of file paths from the dialog menu.
+        /// </summary>
+        /// <returns>List of log file paths</returns>
         public List<string> GetPaths()
         {
             List<string> listOfPaths = new List<string>();

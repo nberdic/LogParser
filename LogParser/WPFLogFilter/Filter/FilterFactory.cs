@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace WPFLogFilter.Filter
 {
+    /// <summary>
+    /// This class is used to create a desired filter.
+    /// </summary>
     public class FilterFactory : IFilterFactory
     {
+        /// <summary>
+        /// This method gives us the corresponding filter depending on the choice we made.
+        /// </summary>
+        /// <param name="choice">The number of the filter we chose</param>
+        /// <returns></returns>
         public IFilter Create(int choice)
         {
             switch (choice)
