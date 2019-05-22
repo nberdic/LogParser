@@ -39,7 +39,7 @@
         </i:EventTrigger>
 
         <i:EventTrigger EventName="KeyDown">
-            <cmd:EventToCommand Command="{Binding LastClosedTabOpenCommand}" />
+            <cmd:EventToCommand Command="{Binding LastClosedTabOpenEventCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     
@@ -61,7 +61,7 @@
             <Menu Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="White" FontSize="14" BorderThickness="1" BorderBrush="Black">
                 <MenuItem Header="_File" Height="25">
                     <MenuItem Header="_Open.." Command="{Binding ClickMenuCommand}"/>
-                    <MenuItem Header="_Open last closed tab (ctrl+shift+T)" Command="{Binding LastClosedTabOpenCommand}" Visibility="{Binding Path=ShowOpenClosedTab,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <MenuItem Header="_Open last closed tab (CTRL+SHIFT+T)" Command="{Binding OpenClosedTabMenuCommand}" Visibility="{Binding Path=ShowOpenClosedTab,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <MenuItem Header="_Open in notepad.." Command="{Binding ClickOpenNotepadCommand}"/>
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"/>
                 </MenuItem>
@@ -76,15 +76,28 @@
             </Grid.RowDefinitions>
 
             <dragablz:TabablzControl
+                
+                
+                
             Visibility="{Binding Path=TabVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
             SelectedIndex="{Binding TabSelectIndex}"
             Name="TabMain"
             ItemsSource="{Binding Tabs}"            
             >
+              <!--  <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseDown">
+                        <cmd:EventToCommand Command="{Binding TabMouseClickCommand}"
+                                            PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers> -->
                 <dragablz:TabablzControl.HeaderItemTemplate>
+                    
                     <DataTemplate >
+                        
                         <StackPanel Orientation="Horizontal">
+                            
                             <TextBlock Margin="0,0,5,3">
+                                
                                 <Run Text="{Binding Path=TabFileName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                             </TextBlock>
                             <TextBlock>

@@ -58,6 +58,7 @@ namespace WPFLogFilter.ViewModel
             Tabs = new ObservableCollection<ITab>();
 
             ClickMenuCommand = new RelayCommand(SelectLogFile);
+            OpenClosedTabMenuCommand = new RelayCommand(ReOpenLastClosedTab);
             CloseTabCommand = new RelayCommand<ITab>(CloseTab);
             ClickOpenNotepadCommand = new RelayCommand(OpenNotepad);
             ExitCommand = new RelayCommand(ExitApplication);
@@ -65,17 +66,20 @@ namespace WPFLogFilter.ViewModel
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
             CloseWindowCommand = new RelayCommand(CloseWindow);
             LastClosedTabOpenEventCommand = new RelayCommand(ReOpenLastClosedTabEvent);
-            LastClosedTabOpenCommand = new RelayCommand(ReOpenLastClosedTab);
+            TabMouseClickCommand = new RelayCommand<MouseEventArgs>(CloseTabMiddleButton);
 
             GetVersion();
         }
-
-
 
         /// <summary>
         /// Command used to open up a dialog menu where we select the files.
         /// </summary>
         public RelayCommand ClickMenuCommand { get; set; }
+
+        /// <summary>
+        /// Command which is used to open up the last closed tab.
+        /// </summary>
+        public RelayCommand OpenClosedTabMenuCommand { get; set; }
 
         /// <summary>
         /// Command used to open up a dialog menu where we select the files which are opened in Notepad.
@@ -108,9 +112,9 @@ namespace WPFLogFilter.ViewModel
         public RelayCommand LastClosedTabOpenEventCommand { get; set; }
 
         /// <summary>
-        /// Command which is used to open up the last closed tab.
+        /// Command triggered by a middle mouse button click on a tab window.
         /// </summary>
-        public RelayCommand LastClosedTabOpenCommand { get; set; }
+        public RelayCommand<MouseEventArgs> TabMouseClickCommand { get; set; }
 
         /// <summary>
         /// A list of interfaces for TabViewModels, which gets an additional tab every time we load a log file.
@@ -285,6 +289,11 @@ namespace WPFLogFilter.ViewModel
                 }
                 GetTabIndex();
             }
+        }
+
+        private void CloseTabMiddleButton(MouseEventArgs e)
+        {
+           
         }
     }
 }
