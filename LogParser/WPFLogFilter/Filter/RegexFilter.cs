@@ -31,13 +31,19 @@ namespace WPFLogFilter.Filter
                 return list;
             }
 
-            //Use regex and try to filter text, if there is an error, don't filter, and return the list.
+            //Use regex and try to filter text, if there is an error, don't filter, and return the list and reset to default.
             try
             {
                 list = new ObservableCollection<LogModel>(list.Where(x => Regex.Match(x.Text, searchText).Success));
             }
             catch (Exception)
             {
+                foreach (var model in list)
+                {
+                    model.FirstText = model.Text;
+                    model.HighLightedText = string.Empty;
+                    model.LastText = string.Empty;
+                }
                 return list;
             }
 

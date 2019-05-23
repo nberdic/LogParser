@@ -487,7 +487,7 @@ namespace WPFLogFilter.ViewModel
         private void PopulateList(string[] logFileData)
         {
             _parsingStrategy = _parsingFactory.Create(logFileData);
-            var parsingCollection = _parsingStrategy.Parse(logFileData);
+            List<LogModel> parsingCollection = _parsingStrategy.Parse(logFileData);
             if (parsingCollection == null)
             {
                 return;

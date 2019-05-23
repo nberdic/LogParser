@@ -66,7 +66,7 @@ namespace WPFLogFilter.ViewModel
             ChangeSizeWindowCommand = new RelayCommand<EventArgs>(ChangeSizeWindow);
             CloseWindowCommand = new RelayCommand(CloseWindow);
             LastClosedTabOpenEventCommand = new RelayCommand(ReOpenLastClosedTabEvent);
-            TabMouseClickCommand = new RelayCommand<MouseEventArgs>(CloseTabMiddleButton);
+            TabMouseClickCommand = new RelayCommand<ITab>(CloseTabMiddleButton);
 
             GetVersion();
         }
@@ -114,7 +114,7 @@ namespace WPFLogFilter.ViewModel
         /// <summary>
         /// Command triggered by a middle mouse button click on a tab window.
         /// </summary>
-        public RelayCommand<MouseEventArgs> TabMouseClickCommand { get; set; }
+        public RelayCommand<ITab> TabMouseClickCommand { get; set; }
 
         /// <summary>
         /// A list of interfaces for TabViewModels, which gets an additional tab every time we load a log file.
@@ -191,7 +191,7 @@ namespace WPFLogFilter.ViewModel
         {
             if (listOfPaths != null)
             {
-                foreach (var path in listOfPaths)
+                foreach (string path in listOfPaths)
                 {
                     Tabs.Add(new TabViewModel(_parsingFactory, _parsingStrategy, _filterFactory, _iLog, path)
                     {
@@ -218,11 +218,16 @@ namespace WPFLogFilter.ViewModel
             List<string> temp = _dialogWrapper.GetPaths();
             if (temp != null)
             {
-                foreach (var path in temp)
+                foreach (string path in temp)
                 {
                     Process.Start("notepad.exe", path);
                 }
             }
+        }
+
+        private void CloseTabMiddleButton(ITab selectedTab)
+        {
+            CloseTab(selectedTab);
         }
 
         private void CloseTab(ITab selectedTab)
@@ -251,7 +256,7 @@ namespace WPFLogFilter.ViewModel
 
             List<string> tempList = new List<string>();
 
-            foreach (var path in filePathList)
+            foreach (string path in filePathList)
             {
                 tempList.Add(path);
             }
@@ -288,11 +293,6 @@ namespace WPFLogFilter.ViewModel
                 }
                 GetTabIndex();
             }
-        }
-
-        private void CloseTabMiddleButton(MouseEventArgs e)
-        {
-           
         }
     }
 }
