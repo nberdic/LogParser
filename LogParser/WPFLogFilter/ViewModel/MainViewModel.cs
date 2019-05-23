@@ -197,7 +197,6 @@ namespace WPFLogFilter.ViewModel
                     {
                         ScrollViewHeight = WindowHeight
                     });
-
                     GetTabIndex();
                 }
             }

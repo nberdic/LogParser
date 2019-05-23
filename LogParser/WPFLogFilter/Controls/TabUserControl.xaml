@@ -35,7 +35,7 @@
         <!--Level1-->
         <!--This level displays the name of each column, and on a case-to-case basis toggles their visibility, it also contains checkboxes-->
         <Border  Grid.Row="0" Grid.Column="0" BorderThickness="2,2,0,2" BorderBrush="Black">
-            <TextBlock Margin="5,0,0,0" MinWidth="59" Text="ID" TextAlignment="Left"/>
+            <TextBlock Margin="5,0,0,0" MinWidth="59" Text="ID" TextAlignment="Left" Visibility="{Binding Path=IdIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}"/>
         </Border>
         <Border  Grid.Row="0" Grid.Column="1" BorderThickness="2,2,0,2" BorderBrush="Black" Visibility="{Binding   Path=DateTimeIsValid, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Collapsed}">
             <TextBlock Width="216" Text="DATE/TIME - FORMAT(HH:mm:ss)" TextAlignment="Center" />

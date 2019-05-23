@@ -21,12 +21,6 @@ namespace WPFLogFilter.ViewModel
         private ObservableCollection<LogModel> _listLoadLine;
         private ObservableCollection<LogModel> _backupList;
         private ObservableCollection<ObservableCollection<LogModel>> _listFilters;
-        private ObservableCollection<LogModel> _dateTimeList;
-        private ObservableCollection<LogModel> _threadIdList;
-        private ObservableCollection<LogModel> _logLevelList;
-        private ObservableCollection<LogModel> _eventIdList;
-        private ObservableCollection<LogModel> _regexList;
-        private ObservableCollection<LogModel> _textList;
 
         private FileWatcher _fileWatcher;
 
@@ -38,6 +32,7 @@ namespace WPFLogFilter.ViewModel
         private IList<LogLevelEnum> _logLvlComboEnumList;
         private LogLevelEnum _logLevelValues;
 
+        private bool _idIsValid = false;
         private bool _dateTimeIsValid = false;
         private bool _threadIdIsValid = false;
         private bool _logLevelIsValid = false;
@@ -50,6 +45,8 @@ namespace WPFLogFilter.ViewModel
 
         private string _logFilePath;
         private string _tabFileName;
+
+        private int _filterCount;
 
         private string _dateTimeSearch1 = "00:00:00";
         private string _dateTimeSearch2 = "23:59:59";
@@ -75,13 +72,6 @@ namespace WPFLogFilter.ViewModel
             _iLog = iLog;
             _logFilePath = logFilePath;
 
-            _eventIdList = new ObservableCollection<LogModel>();
-            _dateTimeList = new ObservableCollection<LogModel>();
-            _threadIdList = new ObservableCollection<LogModel>();
-            _logLevelList = new ObservableCollection<LogModel>();
-            _eventIdList = new ObservableCollection<LogModel>();
-            _regexList = new ObservableCollection<LogModel>();
-            _textList = new ObservableCollection<LogModel>();
             ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
@@ -94,7 +84,7 @@ namespace WPFLogFilter.ViewModel
 
             _fileWatcher.OnFileModified = (s) => FileChangeEvent(s);
             _fileWatcher.Watch(logFilePath);
-            
+
             NoDateCheckBoxIsValid = _listLoadLine.Any(x => x.DateTime == DateTime.MinValue);
         }
 
@@ -153,6 +143,18 @@ namespace WPFLogFilter.ViewModel
             {
                 Set(ref _noDateCheckBox, value);
                 OnChangeCreateFilter();
+            }
+        }
+
+        /// <summary>
+        /// Property used to hide/show the Id column in the DataGrid.
+        /// </summary>
+        public bool IdIsValid
+        {
+            get => _idIsValid;
+            set
+            {
+                Set(ref _idIsValid, value);
             }
         }
 
@@ -359,19 +361,23 @@ namespace WPFLogFilter.ViewModel
 
         private void ToggleColumnVisibility()
         {
+            IdIsValid = true;
             LogLevelIsValid = true;
             TextIsValid = true;
             ThreadIdIsValid = true;
             EventIdIsValid = true;
             DateTimeIsValid = true;
+            _filterCount = 5;
             if (_parsingStrategy is NoThreadIdParsingStrategy)
             {
                 ThreadIdIsValid = false;
+                _filterCount = 4;
             }
 
             if (_parsingStrategy is NoEventIdParsingStrategy)
             {
                 EventIdIsValid = false;
+                _filterCount = 4;
             }
 
             if (_parsingStrategy is StringOnlyParsingStrategy)
@@ -380,6 +386,7 @@ namespace WPFLogFilter.ViewModel
                 ThreadIdIsValid = false;
                 EventIdIsValid = false;
                 DateTimeIsValid = false;
+                _filterCount = 1;
             }
         }
 
@@ -393,99 +400,67 @@ namespace WPFLogFilter.ViewModel
             filterFactory = _filterfactory.Create(2);
             if (_noDateCheckBox)
             {
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2 + "¢"), 2);
+                AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2 + "¢"));
             }
             else
             {
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2), 2);
+                AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2));
             }
 
-            filterFactory = _filterfactory.Create(3);
-            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch), 3);
+            if (!(_parsingStrategy is NoThreadIdParsingStrategy))
+            {
+                filterFactory = _filterfactory.Create(3);
+                AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch));
+            }
 
             filterFactory = _filterfactory.Create(4);
-            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()), 4);
+            AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()));
 
-            filterFactory = _filterfactory.Create(5);
-            ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch), 5);
+            if (!(_parsingStrategy is NoEventIdParsingStrategy))
+            {
+                filterFactory = _filterfactory.Create(5);
+                AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch));
+            }
 
             if (!_regexSearchCheckBox)
             {
                 filterFactory = _filterfactory.Create(7);
                 if (_caseSensitiveCheckBox)
                 {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 7);
+                    AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch));
                 }
                 else
                 {
-                    ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"), 7);
+                    AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"));
                 }
             }
             else
             {
                 filterFactory = _filterfactory.Create(6);
-                ListLoadLine = AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch), 6);
+                AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch));
             }
         }
 
-        //Adds a list of results to a specific filter. If there was a previous filter list, deletes it and replaces it with the current one.
-        private ObservableCollection<LogModel> AddRemoveFilter(ObservableCollection<LogModel> list, int caseNo)
+        //Goes through a list of filters, finds their common objects and produces a list.
+        private void AddRemoveFilter(ObservableCollection<LogModel> list)
         {
-            switch (caseNo)
-            {
-                case 2:
-                    ListFilters.Remove(_dateTimeList);
-                    _dateTimeList = list;
-                    break;
-                case 3:
-                    ListFilters.Remove(_threadIdList);
-                    _threadIdList = list;
-                    break;
-                case 4:
-                    ListFilters.Remove(_logLevelList);
-                    _logLevelList = list;
-                    break;
-                case 5:
-                    ListFilters.Remove(_eventIdList);
-                    _eventIdList = list;
-                    break;
-                case 6:
-                    ListFilters.Remove(_regexList);
-                    _regexList = list;
-                    ListFilters.Remove(_textList);
-                    _textList = list;
-                    break;
-                case 7:
-                    ListFilters.Remove(_textList);
-                    _textList = list;
-                    ListFilters.Remove(_regexList);
-                    _regexList = list;
-                    break;
-            }
+            ListFilters.Add(list);
 
-            //Goes through a list of filters, finds their common objects and produces a list.
-            if (list != null)
+            if (ListFilters.Count == _filterCount)
             {
-                ListFilters.Add(list);
+                IEnumerable<LogModel> filterResult = null;
 
-                IEnumerable<LogModel> filterResult = list;
-                if (ListFilters.Count() > 1)
+                for (int x = 0; x < ListFilters.Count - 1; x++)
                 {
-                    for (int x = 0; x < ListFilters.Count - 1; x++)
+                    if (x == 0)
                     {
-                        if (x == 0)
-                        {
-                            filterResult = ListFilters[x].Intersect(ListFilters[x + 1]).ToList();
-                            continue;
-                        }
-                        filterResult = filterResult.Intersect(ListFilters[x + 1]).ToList();
+                        filterResult = ListFilters[x].Intersect(ListFilters[x + 1]).ToList();
+                        continue;
                     }
+                    filterResult = filterResult.Intersect(ListFilters[x + 1]).ToList();
                 }
-                return new ObservableCollection<LogModel>(filterResult);
-            }
-            else
-            {
-                return null;
+                ListLoadLine = new ObservableCollection<LogModel>(filterResult);
+                ListFilters.Clear();
             }
         }
 
