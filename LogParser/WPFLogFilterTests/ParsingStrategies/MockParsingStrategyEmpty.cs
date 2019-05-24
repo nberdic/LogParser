@@ -10,9 +10,9 @@ namespace WPFLogFilterTests.ParsingStrategies
 {
     public class MockParsingStrategyEmpty : IParsingStrategy
     {
-        public List<LogModel> Parse(string[] lines)
+        public List<IModel> Parse(string[] lines)
         {
-            return new List<LogModel>();
+            return new List<IModel>();
         }
     }
 }

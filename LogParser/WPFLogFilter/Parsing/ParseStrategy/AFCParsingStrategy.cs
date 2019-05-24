@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WPFLogFilter.Model;
 
 namespace WPFLogFilter.Parsing.ParseStrategy
 {
-    /// <summary>
-    /// This class is used to help us parse the lines of the logs and put them into the correct format.
-    /// </summary>
-    public class NoEventIdParsingStrategy : IParsingStrategy
+    public class AFCParsingStrategy : IParsingStrategy
     {
         /// <summary>
-        /// This method takes the lines from log and it parses them into 5 columns, or if it can't it returns the damaged columns as default values.
+        /// This method takes the lines from log and it parses them into 6 columns, or if it can't it returns the damaged columns as default values.
         /// </summary>
         /// <param name="lines">List of log lines</param>
         /// <returns></returns>
@@ -24,25 +17,36 @@ namespace WPFLogFilter.Parsing.ParseStrategy
             List<IModel> tempList = new List<IModel>();
             DateTime dateTime;
 
-            //Checking if the log line fits this strategy which has 5 columns
+            //Checking if the log line fits this strategy which has 6 columns
             for (int x = 0; x < lines.Length; x++)
             {
-                string[] arrayOfParts = lines[x].Split('|');
-                if ((lines[x] != "") && (arrayOfParts.Count() == 5))
+                string[] arrayOfParts = lines[x].Split(',');
+                if ((lines[x] != "") && (arrayOfParts.Count() == 6))
                 {
                     int id = x + 1;
-                    string threadId = arrayOfParts[2];
-                    string logLevel = arrayOfParts[3];
-                    string text = arrayOfParts[4].Trim();
+                    int eventId;
+                    bool isValid = true;
 
                     //Combines the first column , which has the date, and the second column which has the time. If it fails, the value is set to DateTime.MinValue
                     if (!DateTime.TryParse(arrayOfParts[0] + " " + arrayOfParts[1], out dateTime))
                     {
                         dateTime = DateTime.MinValue;
-                        tempList.Add(new NoEventIdTSUModel(id, dateTime, threadId, logLevel, text, false));
+                        isValid = false;
                     }
 
-                    tempList.Add(new NoEventIdTSUModel(id, dateTime, threadId, logLevel, text, true));
+                    string hardwareId = arrayOfParts[2];
+                    string service = arrayOfParts[3];
+                    string logLevel = arrayOfParts[4];
+
+                    // In case a column is damaged it will replace the value with the minimum value.
+                    if (!int.TryParse(arrayOfParts[5], out eventId))
+                    {
+                        eventId = -1;
+                        isValid = false;
+                    }
+
+                    string text = arrayOfParts[5].Trim();
+                    tempList.Add(new CompleteAFCModel(id, dateTime, hardwareId, service, logLevel, eventId, text, isValid));
                 }
                 // In case a column can't be parsed it will be replaced with the minimum value, but still show the entire line.
                 else
@@ -50,8 +54,9 @@ namespace WPFLogFilter.Parsing.ParseStrategy
                     tempList.Add(new StringOnlyModel(lines[x]));
                 }
             }
+
             return tempList;
         }
+
     }
 }
-

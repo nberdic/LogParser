@@ -26,7 +26,7 @@ namespace WPFLogFilterTests.ViewModelTests
         Mock<IParsingStrategy> iParsingStrategy;
         Mock<ILog> iLog;
         MainViewModel viewModel;
-        Mock<ObservableCollection<LogModel>> observableCollection;
+        Mock<ObservableCollection<IModel>> observableCollection;
 
         [TestInitialize]
 
@@ -38,7 +38,7 @@ namespace WPFLogFilterTests.ViewModelTests
             iFilterFactory = new Mock<IFilterFactory>();
             iParsingStrategy = new Mock<IParsingStrategy>();
             iLog = new Mock<ILog>();
-            observableCollection = new Mock<ObservableCollection<LogModel>>();
+            observableCollection = new Mock<ObservableCollection<IModel>>();
 
             viewModel = new MainViewModel(iDialogWrapper.Object, iAssemblyWrapper.Object, iParsingFactory.Object, iFilterFactory.Object, iLog.Object);
         }
@@ -155,9 +155,9 @@ namespace WPFLogFilterTests.ViewModelTests
             });
 
             iParsingFactory.Setup(x => x.Create(It.IsAny<string[]>())).Returns((new MockParsingStrategyIsNull()));
-            iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<LogModel>()
+            iParsingStrategy.Setup(x => x.Parse(new string[2])).Returns(new List<IModel>()
             {
-                new LogModel()
+                new IModel()
             });
 
             // Act

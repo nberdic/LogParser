@@ -30,7 +30,7 @@ namespace WPFLogFilterTests.ParsingTests.ParseFactoryTests
             parsingStrategy = parsingFactory.Create(fullParsingStrategyLine);
 
             //Assert
-            Assert.AreEqual(typeof(FullParsingStrategy), parsingStrategy.GetType());
+            Assert.AreEqual(typeof(AFCParsingStrategy), parsingStrategy.GetType());
         }
 
         [TestMethod]

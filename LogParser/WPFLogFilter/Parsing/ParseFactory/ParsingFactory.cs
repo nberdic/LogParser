@@ -24,6 +24,21 @@ namespace WPFLogFilter.Parsing.ParsingFactory
                 return new StringOnlyParsingStrategy();
             }
 
+            foreach (string line in lines)
+            {
+                if (line.Length>=10)
+                {
+                    if (line[10].Equals('|'))
+                    {
+                        break;
+                    }
+                    else if (line[10].Equals(','))
+                    {
+                        return new AFCParsingStrategy();
+                    }
+                }
+            }
+
             //This method load all the lines from the log and checks if the strings belong to a certain format. 
             for (int x = 0; x < lines.Length; x++)
             {

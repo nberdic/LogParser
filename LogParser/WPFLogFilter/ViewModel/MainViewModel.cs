@@ -21,13 +21,12 @@ namespace WPFLogFilter.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<LogModel> _listLoadLine;
+        private ObservableCollection<IModel> _listLoadLine;
 
         private IDialogWrapper _dialogWrapper;
         private IAssemblyWrapper _assemblyWrapper;
         private IParsingFactory _parsingFactory;
         private IParsingStrategy _parsingStrategy;
-        private IFilterFactory _filterFactory;
         private ILog _iLog;
         private List<ITab> _closedTabsList;
 
@@ -45,14 +44,13 @@ namespace WPFLogFilter.ViewModel
         /// <param name="iParsingFactory">Interface for determining which parsing strategy we need to use</param>
         /// <param name="iFilterFactory">Interface for the filters we need to use in the TabViewModel</param>
         /// <param name="iLog">Interface for the LogParse's log file</param>
-        public MainViewModel(IDialogWrapper iDialogWrapper, IAssemblyWrapper iAssemblyWrapper, IParsingFactory iParsingFactory, IFilterFactory iFilterFactory, ILog iLog)
+        public MainViewModel(IDialogWrapper iDialogWrapper, IAssemblyWrapper iAssemblyWrapper, IParsingFactory iParsingFactory, ILog iLog)
         {
             _dialogWrapper = iDialogWrapper ?? throw new ArgumentNullException(nameof(iDialogWrapper));
             _assemblyWrapper = iAssemblyWrapper ?? throw new ArgumentNullException(nameof(iAssemblyWrapper));
             _parsingFactory = iParsingFactory ?? throw new ArgumentNullException(nameof(iParsingFactory));
-            _filterFactory = iFilterFactory ?? throw new ArgumentNullException(nameof(iFilterFactory));
             _iLog = iLog ?? throw new ArgumentNullException(nameof(iLog));
-            _listLoadLine = new ObservableCollection<LogModel>();
+            _listLoadLine = new ObservableCollection<IModel>();
             _closedTabsList = new List<ITab>();
 
             Tabs = new ObservableCollection<ITab>();
@@ -193,7 +191,7 @@ namespace WPFLogFilter.ViewModel
             {
                 foreach (string path in listOfPaths)
                 {
-                    Tabs.Add(new TabViewModel(_parsingFactory, _parsingStrategy, _filterFactory, _iLog, path)
+                    Tabs.Add(new TabViewModel(_parsingFactory, _parsingStrategy, _iLog, path)
                     {
                         ScrollViewHeight = WindowHeight
                     });

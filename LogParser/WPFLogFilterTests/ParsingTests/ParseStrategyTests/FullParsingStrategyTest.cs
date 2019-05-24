@@ -11,15 +11,15 @@ namespace WPFLogFilterTests.ParsingTests.ParseStrategyTests
     [TestClass]
     public class FullParsingStrategyTest
     {
-        List<LogModel> listOfResults;
+        List<IModel> listOfResults;
         string[] inputString;
         IParsingStrategy parsingStrategy;
 
         [TestInitialize]
         public void Initiliaze()
         {
-            listOfResults = new List<LogModel>();
-            parsingStrategy = new FullParsingStrategy();
+            listOfResults = new List<IModel>();
+            parsingStrategy = new AFCParsingStrategy();
         }
 
         [TestMethod]

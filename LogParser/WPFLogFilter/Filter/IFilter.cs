@@ -11,7 +11,7 @@ namespace WPFLogFilter.Filter
     /// <summary>
     /// This is the interface for the filter classes.  
     /// </summary>
-    public interface IFilter
+    public interface IFilter<T> where T : IModel
     {
         /// <summary>
         /// This method is used to filter the log list by multiple criteria.
@@ -19,6 +19,6 @@ namespace WPFLogFilter.Filter
         /// <param name="list">List of log objects</param>
         /// <param name="search">Search criteria</param>
         /// <returns></returns>
-        ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search);
+        IEnumerable<T> Filter(IEnumerable<T> list, string search);
     }
 }

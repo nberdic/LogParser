@@ -12,18 +12,18 @@ namespace WPFLogFilterTests.FilterTests
     [TestClass]
     public class DateTimeFilterTests
     {
-        ObservableCollection<LogModel> listOfLines;
+        ObservableCollection<IModel> listOfLines;
         IFilter filter;
         string search;
 
         [TestInitialize]
         public void Initiliaze()
         {
-            listOfLines = new ObservableCollection<LogModel> {
-             new LogModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 8, 30, 52), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something" },
-             new LogModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 23, 00, 55), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something2" },
-             new LogModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 9, 30, 52), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something3" },
-              new LogModel { Id = 1, DateTime = DateTime.MinValue, ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something3" }
+            listOfLines = new ObservableCollection<IModel> {
+             new IModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 8, 30, 52), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something" },
+             new IModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 23, 00, 55), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something2" },
+             new IModel { Id = 1, DateTime = new DateTime(2019, 1, 8, 9, 30, 52), ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something3" },
+              new IModel { Id = 1, DateTime = DateTime.MinValue, ThreadId = "[00000001]", LogLevel = "Info", EventId = 1, Text = "Something3" }
             };
 
             filter = new DateTimeFilter();

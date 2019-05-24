@@ -18,14 +18,13 @@ namespace WPFLogFilter.ViewModel
 {
     public class TabViewModel : ViewModelBase, ITab
     {
-        private ObservableCollection<LogModel> _listLoadLine;
-        private ObservableCollection<LogModel> _backupList;
-        private ObservableCollection<ObservableCollection<LogModel>> _listFilters;
+        private ObservableCollection<IModel> _listLoadLine;
+        private ObservableCollection<IModel> _backupList;
+        private ObservableCollection<ObservableCollection<IModel>> _listFilters;
 
         private FileWatcher _fileWatcher;
 
         private IParsingFactory _parsingFactory;
-        private IFilterFactory _filterfactory;
         private IParsingStrategy _parsingStrategy;
         private ILog _iLog;
 
@@ -63,16 +62,15 @@ namespace WPFLogFilter.ViewModel
         /// <param name="iFilterFactory">Interface for the filters we need to use</param>
         /// <param name="iLog">Interface for the LogParse's log file</param>
         /// <param name="logFilePath">A string containing the path to the log file</param>
-        public TabViewModel(IParsingFactory iParsingFactory, IParsingStrategy iParsingStrategy, IFilterFactory iFilterFactory, ILog iLog, string logFilePath)
+        public TabViewModel(IParsingFactory iParsingFactory, IParsingStrategy iParsingStrategy, ILog iLog, string logFilePath)
         {
             _fileWatcher = new FileWatcher();
             _parsingFactory = iParsingFactory;
-            _filterfactory = iFilterFactory;
             _parsingStrategy = iParsingStrategy;
             _iLog = iLog;
             _logFilePath = logFilePath;
 
-            ListFilters = new ObservableCollection<ObservableCollection<LogModel>>();
+            ListFilters = new ObservableCollection<ObservableCollection<IModel>>();
             _logLvlComboEnumList = Enum.GetValues(typeof(LogLevelEnum)).OfType<LogLevelEnum>().ToList();
 
             PopulateList(GetLines(logFilePath));
@@ -85,13 +83,13 @@ namespace WPFLogFilter.ViewModel
             _fileWatcher.OnFileModified = (s) => FileChangeEvent(s);
             _fileWatcher.Watch(logFilePath);
 
-            NoDateCheckBoxIsValid = _listLoadLine.Any(x => x.DateTime == DateTime.MinValue);
+            NoDateCheckBoxIsValid = _listLoadLine.OfType<IStandardModel>().Any(x => x.DateTime == DateTime.MinValue);
         }
 
         /// <summary>
         /// Property used as a Main list that is displayed in the DataGrid.
         /// </summary>
-        public ObservableCollection<LogModel> ListLoadLine
+        public ObservableCollection<IModel> ListLoadLine
         {
             get => _listLoadLine;
             set
@@ -311,7 +309,7 @@ namespace WPFLogFilter.ViewModel
         /// <summary>
         /// Property that is used to store all the filter lists that the log lines go through.
         /// </summary>
-        public ObservableCollection<ObservableCollection<LogModel>> ListFilters
+        public ObservableCollection<ObservableCollection<IModel>> ListFilters
         {
             get => _listFilters;
             set
@@ -395,60 +393,58 @@ namespace WPFLogFilter.ViewModel
         //,,case sensivitivy is enabled''.
         private void OnChangeCreateFilter()
         {
-            IFilter filterFactory;
-
-            filterFactory = _filterfactory.Create(2);
+            var filterFactory = new DateTimeFilter();
             if (_noDateCheckBox)
             {
-                AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2 + "¢"));
+                AddRemoveFilter(filterFactory.Filter(_backupList.OfType<IStandardModel>(), DateTimeSearch1 + "¥" + DateTimeSearch2 + "¢"));
             }
             else
             {
-                AddRemoveFilter(filterFactory.Filter(_backupList, DateTimeSearch1 + "¥" + DateTimeSearch2));
+                AddRemoveFilter(filterFactory.Filter(_backupList.OfType<IStandardModel>(), DateTimeSearch1 + "¥" + DateTimeSearch2));
             }
 
+            var filterFactory2 = new ThreadIdFilter();
             if (!(_parsingStrategy is NoThreadIdParsingStrategy))
             {
-                filterFactory = _filterfactory.Create(3);
-                AddRemoveFilter(filterFactory.Filter(_backupList, ThreadIdSearch));
+                AddRemoveFilter(filterFactory2.Filter(_backupList.OfType<IThreadIdModel>(), ThreadIdSearch));
             }
 
-            filterFactory = _filterfactory.Create(4);
-            AddRemoveFilter(filterFactory.Filter(_backupList, LogLevelValues.ToString()));
+            var filterFactory3 = new LogLevelFilter();
+            AddRemoveFilter(filterFactory3.Filter(_backupList.OfType<IStandardModel>(), LogLevelValues.ToString()));
 
             if (!(_parsingStrategy is NoEventIdParsingStrategy))
             {
-                filterFactory = _filterfactory.Create(5);
-                AddRemoveFilter(filterFactory.Filter(_backupList, EventIdSearch));
+                var filterFactory4 = new EventIdFilter();
+                AddRemoveFilter(filterFactory4.Filter(_backupList.OfType<IEventIdModel>(), EventIdSearch));
             }
 
             if (!_regexSearchCheckBox)
             {
-                filterFactory = _filterfactory.Create(7);
+                var filterFactory5 = new TextFilter();
                 if (_caseSensitiveCheckBox)
                 {
-                    AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch));
+                    AddRemoveFilter(filterFactory5.Filter(_backupList, LogTextSearch));
                 }
                 else
                 {
-                    AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch + "¢"));
+                    AddRemoveFilter(filterFactory5.Filter(_backupList, LogTextSearch + "¢"));
                 }
             }
             else
             {
-                filterFactory = _filterfactory.Create(6);
-                AddRemoveFilter(filterFactory.Filter(_backupList, LogTextSearch));
+                var filterFactory6 = new RegexFilter();
+                AddRemoveFilter(filterFactory6.Filter(_backupList, LogTextSearch));
             }
         }
 
         //Goes through a list of filters, finds their common objects and produces a list.
-        private void AddRemoveFilter(ObservableCollection<LogModel> list)
+        private void AddRemoveFilter(IEnumerable<IModel> list)
         {
-            ListFilters.Add(list);
+            ListFilters.Add( new ObservableCollection<IModel>(list));
 
             if (ListFilters.Count == _filterCount)
             {
-                IEnumerable<LogModel> filterResult = null;
+                IEnumerable<IModel> filterResult = null;
 
                 for (int x = 0; x < ListFilters.Count - 1; x++)
                 {
@@ -459,7 +455,7 @@ namespace WPFLogFilter.ViewModel
                     }
                     filterResult = filterResult.Intersect(ListFilters[x + 1]).ToList();
                 }
-                ListLoadLine = new ObservableCollection<LogModel>(filterResult);
+                ListLoadLine = new ObservableCollection<IModel>(filterResult);
                 ListFilters.Clear();
             }
         }
@@ -487,12 +483,12 @@ namespace WPFLogFilter.ViewModel
         private void PopulateList(string[] logFileData)
         {
             _parsingStrategy = _parsingFactory.Create(logFileData);
-            List<LogModel> parsingCollection = _parsingStrategy.Parse(logFileData);
+            List<IModel> parsingCollection = _parsingStrategy.Parse(logFileData);
             if (parsingCollection == null)
             {
                 return;
             }
-            ListLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(logFileData));
+            ListLoadLine = new ObservableCollection<IModel>(_parsingStrategy.Parse(logFileData));
             _backupList = _listLoadLine;
         }
 
@@ -515,7 +511,7 @@ namespace WPFLogFilter.ViewModel
 
         private void FileChangeEvent(string logFilePath)
         {
-            _listLoadLine = new ObservableCollection<LogModel>(_parsingStrategy.Parse(GetLines(logFilePath)));
+            _listLoadLine = new ObservableCollection<IModel>(_parsingStrategy.Parse(GetLines(logFilePath)));
             _backupList = _listLoadLine;
             OnChangeCreateFilter();
         }

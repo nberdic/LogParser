@@ -16,6 +16,6 @@ namespace WPFLogFilter.Parsing.ParseStrategy
         /// <summary>
         /// This class is used to help us parse the lines of the logs and put them into the correct format.
         /// </summary>
-        List<LogModel> Parse(string[] lines);
+        List<IModel> Parse(string[] lines);
     }
 }

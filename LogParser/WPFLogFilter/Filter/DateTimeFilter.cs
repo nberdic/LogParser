@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WPFLogFilter.Model;
@@ -8,7 +9,7 @@ namespace WPFLogFilter.Filter
     /// <summary>
     /// this class is used to filter the log lines with the beginning and end dates.
     /// </summary>
-    public class DateTimeFilter : IFilter
+    public class DateTimeFilter : IFilter<IStandardModel>
     {
         /// <summary>
         /// This method is used to filter the log lines using the in-between-two-dates criteria.
@@ -16,7 +17,7 @@ namespace WPFLogFilter.Filter
         /// <param name="list">List of log objects</param>
         /// <param name="search">Two Dates combined into a string and used as criteria for filtering</param>
         /// <returns></returns>
-        public ObservableCollection<LogModel> Filter(ObservableCollection<LogModel> list, string search)
+        public IEnumerable<IStandardModel> Filter(IEnumerable<IStandardModel> list, string search)
         {
             search = search.Trim();
 
@@ -77,6 +78,7 @@ namespace WPFLogFilter.Filter
                 DateTime date = DateTime.MinValue;
 
                 //Because we only get Time from our filter strings, we take the date from the list that we loaded
+
                 foreach (var item in list)
                 {
                     if (item.DateTime != DateTime.MinValue)
@@ -85,6 +87,7 @@ namespace WPFLogFilter.Filter
                         break;
                     }
                 }
+
 
                 //we attach the time from strings to the date taken from a list we loaded
                 if ((date != DateTime.MinValue) && (DateTime.TryParse(date.ToShortDateString() + " " + times[0], out DateTime dt1))
@@ -96,18 +99,18 @@ namespace WPFLogFilter.Filter
                         dt2 = dt2.AddSeconds(1);
                         var query = (from item in list
                                      where (((item.DateTime > DateTime.MinValue && item.DateTime <= dt2) && item.DateTime >= dt1) || item.DateTime == DateTime.MinValue)
-                                     select item).ToList();
+                                     select item);
 
-                        return new ObservableCollection<LogModel>(query);
+                        return query;
                     }
                     else
                     {
                         dt2 = dt2.AddSeconds(1);
                         var query = (from item in list
                                      where (item.DateTime <= dt2) && (item.DateTime >= dt1)
-                                     select item).ToList();
+                                     select item);
 
-                        return new ObservableCollection<LogModel>(query);
+                        return query;
                     }
                 }
                 else

@@ -30,7 +30,6 @@ namespace WPFLogFilter.ViewModel
             SimpleIoc.Default.Register<IDialogWrapper, DialogWrapper>();
             SimpleIoc.Default.Register<IAssemblyWrapper, AssemblyWrapper>();
             SimpleIoc.Default.Register<IParsingFactory, ParsingFactory>();
-            SimpleIoc.Default.Register<IFilterFactory, FilterFactory>();
             SimpleIoc.Default.Register(new Func<ILog>(() => logger));
 
             SimpleIoc.Default.Register<TabViewModel>();

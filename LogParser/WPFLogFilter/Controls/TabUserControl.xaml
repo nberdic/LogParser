@@ -171,7 +171,8 @@
 
                         <DataGridTextColumn Header="Thread Id" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding ThreadId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="103" Visibility="{Binding Data.ThreadIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
 
-                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=Collapsed}" Width="103" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        <DataGridTextColumn Header="Log Level" HeaderStyle="{StaticResource CenterGridHeaderStyle}" ElementStyle="{StaticResource MiddleAlignStyle}" Binding="{Binding LogLevel, Mode=OneWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=''}" Width="103" Visibility="{Binding Data.LogLevelIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}"/>
+                        
                         <DataGridTextColumn Header="Event Id" Visibility="{Binding  Data.EventIdIsValid,Converter={StaticResource BooleanToVisibilityConverter},Source={StaticResource proxy}}" Binding="{Binding EventId,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"  Width="86">
                             <DataGridTextColumn.ElementStyle>
                                 <Style>
@@ -189,9 +190,9 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock FontSize="1">
-                                        <Run FontSize="13" Text="{Binding FirstText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                        <Run FontSize="13" Text="{Binding HighLightedText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Background="Yellow"/>
-                                        <Run FontSize="13" Text="{Binding LastText,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Run FontSize="13" Text="{Binding TextFirstPart,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Run FontSize="13" Text="{Binding TextHighlightedPart,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Background="Yellow"/>
+                                        <Run FontSize="13" Text="{Binding TextSecondPart,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock.Style>
                                             <Style>
                                                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
@@ -210,20 +211,10 @@
                                             <Style TargetType="Button">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding DateTime}" Value="01-01-0001 00:00:00">
+                                                    <DataTrigger Binding="{Binding IsValid}" Value="false">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
-
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding EventId}" Value="-1"/>
-                                                            <Condition Binding="{Binding Data.EventIdIsValid,Source={StaticResource proxy}}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
+                                                   
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>

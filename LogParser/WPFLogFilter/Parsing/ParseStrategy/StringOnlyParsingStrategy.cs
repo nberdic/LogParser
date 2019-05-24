@@ -13,17 +13,17 @@ namespace WPFLogFilter.Parsing.ParseStrategy
     public class StringOnlyParsingStrategy : IParsingStrategy
     {
         /// <summary>
-        /// This method is used to copy the entire line to the text column and give the LogModel object default values.
+        /// This method is used to copy the entire line to the text column.
         /// </summary>
         /// <param name="lines">List of log lines</param>
         /// <returns></returns>
-        public List<LogModel> Parse(string[] lines)
+        public List<IModel> Parse(string[] lines)
         {
-            List<LogModel> tempList = new List<LogModel>();
+            List<IModel> tempList = new List<IModel>();
 
             for (int x = 0; x < lines.Length; x++)
             {
-                tempList.Add(new LogModel(x + 1, DateTime.MinValue, "", "", -1, lines[x]));
+                tempList.Add(new StringOnlyModel(lines[x]));
             }
             return tempList;
         }
